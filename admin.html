@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Admin - Iwan Poles Art</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-slate-90 min-h-screen text-slate-100 p-6 md:p-12">
+
+    <div class="max-w-2xl mx-auto bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl">
+        <div class="flex justify-between items-center mb-8 pb-4 border-b border-slate-700">
+            <div>
+            <h1 class="text-2xl font-bold text-white">CMS IWAN POLES ART Galeri</h1>
+            <p class="text-slate-400 text-sm">Input lukisan baru ke dalam katalog web</p>
+            </div>
+            <a href="index.html" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all">
+                Lihat Web Utama ➡️
+            </a>
+        </div>
+
+        <form id="form-class" class="space-y-6">
+            <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Judul Lukisan</label>
+                <input type="text" id="input-judul" required-class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" Placeholder="Contoh : Logika Semesta">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Ukuran</label>
+                <input type="text" id="input-harga" required-class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" Placeholder="Contoh : 100 x 100 cm">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Media & Bahan</label>
+                <input type="text" id="input-media" required-class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" Placeholder="Contoh : Cat Aklirik di atas Kanvas">
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    
+</body>
+</html>

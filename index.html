@@ -1,178 +1,193 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iwan Poles Art Galeri</title>
-    <!-- Panggil Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Iwan Poles Art Gallery</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-900 flex flex-col items-center min-h-screen pt-24">
+<body class="bg-slate-900 min-h-screen text-slate-100 antialiased overflow-x-hidden">
 
-    <!-- NAVBAR UTAMA -->
-<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <!-- Logo / Nama Brand -->
-        <a href="#" class="text-xl font-bold text-gray-800 tracking-wider hover:text-amber-600 transition">
-            IWAN POLES <span class="text-amber-500">ART GALLERY</span>
-        </a>
-        
-        <!-- Menu Navigasi -->
-        <div class="space-x-6 font-medium text-gray-600">
-            <a href="#" class="hover:text-amber-500 transition text-amber-500 border-b-2 border-amber-500 pb-1">Home</a>
-            <a href="#" class="hover:text-amber-500 transition">Galeri</a>
-            <a href="#" class="hover:text-amber-500 transition">Tentang Kami</a>
-            <a href="#" class="hover:text-amber-500 transition">Kontak</a>
-        </div>
-    </div>
-</nav>
-
-
-    <!-- HERO SECTION -->
-<header class="w-full max-w-6xl mx-auto px-6 py-12 md:py-20 flex flex-col md:flex-row items-center gap-12 mt-12">
-    <!-- Bagian Kiri: Teks & Slogan -->
-    <div class="flex-1 text-center md:text-left">
-        <span class="dark-grey font-semibold tracking-widest text-sm uppercase">Koleksi Eksklusif 2026</span>
-        <h1 class="text-4xl md:text-6xl font-extrabold dark-grey leading-tight mt-2 mb-6">
-            Sentuhan Poles Seni <br class="hidden md:inline"> Pada Setiap Kanvas
-        </h1>
-        <p class="text-slate-400 text-lg mb-8 max-w-lg">
-            Bawa pulang keindahan maha karya otentik hasil goresan tangan profesional. Dibuat khusus untuk menghidupkan estetika ruang kemewahan Anda.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <button class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-8 py-4 rounded-xl shadow-lg shadow-amber-500/20 transform active:scale-95 transition-all">
-                Jelajahi Galeri
-            </button>
-            <button class="border-2 border-slate-700 hover:border-slate-500 text-white font-semibold px-8 py-4 rounded-xl transition-all">
-                Hubungi Seniman
+    <nav class="fixed top-0 left-0 w-full z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold tracking-wider text-white">
+                IWAN<span class="text-amber-500 font-light">POLES</span>
+            </a>
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href="#" class="text-amber-500 transition-colors">Beranda</a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors">Koleksi</a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors">Tentang</a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors">Kontak</a>
+            </div>
+            <button class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-amber-500/10">
+                Hubungi Kami
             </button>
         </div>
-    </div>
+    </nav>
 
-    <!-- Bagian Kanan: Frame Lukisan Andalan -->
-    <div class="flex-1 flex justify-center">
-        <div class="relative group">
-            <!-- Efek Cahaya di Belakang Lukisan -->
-            <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
-            
-            <!-- Frame Lukisan -->
-            <div class="relative bg-slate-800 p-4 rounded-2xl shadow-2xl border border-slate-700">
-                <!-- Kita pakai gambar placeholder lukisan abstrak dulu dari internet -->
-                <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=500&auto=format&fit=crop&q=80" 
-                     alt="Lukisan Andalan Iwan Poles" 
-                     class="w-[350px] h-[450px] object-cover rounded-xl grayscale-[20%] hover:grayscale-0 transition-all duration-500">
-                <div class="mt-4 text-center">
-                    <p class="text-xs text-slate-500 uppercase tracking-widest">Karya Utama</p>
-                    <h3 class="text-lg font-bold text-slate-200 mt-1">"Jiwa yang Berpijar" (2026)</h3>
-                </div>
+    <header class="w-full min-h-screen flex items-center justify-center pt-20 px-6 relative overflow-hidden bg-radial from-slate-900 via-slate-950 to-slate-950">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(245,158,11,0.08),transparent_50%)]"></div>
+        <div class="max-w-4xl text-center z-10 space-y-8">
+            <span class="text-xs font-semibold tracking-widest text-amber-500 uppercase bg-amber-500/10 px-4 py-1.5 rounded-full">
+                Eksklusif & Autentik
+            </span>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                Goresan Jiwa di Atas Kanvas Modern
+            </h1>
+            <p class="text-slate-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Hadirkan kemewahan rasa dan makna mendalam di ruang Anda melalui koleksi lukisan abstrak kontemporer terbaik karya Iwan Poles.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+                <button class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-8 py-4 rounded-xl transition-all shadow-xl shadow-amber-500/20">
+                    Jelajahi Galeri
+                </button>
+                <button class="w-full sm:w-auto border border-slate-700 hover:border-slate-500 text-white font-semibold px-8 py-4 rounded-xl transition-all">
+                    Lihat Video Studio
+                </button>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<!-- KATALOG / GALERI SECTION -->
-<main class="w-full max-w-6xl mx-auto px-6 py-16">
-    <!-- Judul Section -->
+
+    <main class="w-full max-w-6xl mx-auto px-6 py-16">
     <div class="text-center mb-12">
         <h2 class="text-3xl font-bold text-white mb-2">Koleksi Lukisan Terbaru</h2>
         <div class="h-1 w-20 bg-amber-500 mx-auto rounded-full"></div>
         <p class="text-slate-400 mt-4">Pilih dan bawa pulang karya yang paling berbicara dengan jiwa Anda.</p>
     </div>
 
-    <!-- Grid Produk (Bikin 3 Kolom Sejajar) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <!-- KARTU LUKISAN 1 -->
-        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg group hover:-translate-y-2 transition-all duration-300">
-            <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=500&auto=format&fit=crop&q=80" alt="Lukisan 1" class="w-full h-64 object-cover">
-            <div class="p-6">
-                <span class="text-xs font-semibold text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full">Tersedia</span>
-                <h3 class="text-xl font-bold text-white mt-3">Abstrak Logika</h3>
-                <p class="text-slate-400 text-sm mt-2 line-clamp-2">Kombinasi warna tegas yang menggambarkan dinamika pikiran seorang engineer.</p>
-                <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
-                    <span class="text-lg font-bold text-emerald-400">Rp 4.500.000</span>
-                    <button class="bg-slate-700 hover:bg-amber-500 hover:text-slate-900 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all">
-                        Detail
-                    </button>
+    <div id="katalog-lukisan" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+    </main>
+    
+
+    <section class="w-full bg-slate-950 py-16 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+            <div class="flex-1 flex justify-center">
+                <div class="w-64 h-64 rounded-full overflow-hidden border-4 border-amber-500 shadow-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center text-slate-900 font-black text-6xl">
+                    IP
                 </div>
             </div>
-        </div>
-
-        <!-- KARTU LUKISAN 2 -->
-        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg group hover:-translate-y-2 transition-all duration-300">
-            <img src="https://picsum.photos/id/101/500/400" alt="Lukisan 2" class="w-full h-64 object-cover">
-            <div class="p-6">
-                <span class="text-xs font-semibold text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full">Tersedia</span>
-                <h3 class="text-xl font-bold text-white mt-3">Simfoni Samudra</h3>
-                <p class="text-slate-400 text-sm mt-2 line-clamp-2">Deburan ombak bertekstur tebal, memberikan ketenangan instan di ruang kerja.</p>
-                <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
-                    <span class="text-lg font-bold text-emerald-400">Rp 6.200.000</span>
-                    <button class="bg-slate-700 hover:bg-amber-500 hover:text-slate-900 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all">
-                        Detail
-                    </button>
-                </div>
+            <div class="flex-1 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-white mb-4">Di Balik Polesan Kuas</h2>
+                <p class="text-slate-400 leading-relaxed mb-6">
+                    Berawal dari coretan dinding di sudut kota, saya mendedikasikan hidup untuk mengeksplorasi emosi manusia di atas kanvas. Setiap karya di <span class="text-amber-500 font-semibold">Iwan Poles Art</span> adalah hasil perenungan mendalam, kombinasi teknik poles tekstur tebal, dan pemilihan warna yang berani.
+                </p>
             </div>
         </div>
+    </section>
 
-        <!-- KARTU LUKISAN 3 -->
-        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg group hover:-translate-y-2 transition-all duration-300">
-            <img src="https://picsum.photos/id/101/500/400" alt="Lukisan 3" class="w-full h-64 object-cover">
-            <div class="p-6">
-                <span class="text-xs font-semibold text-red-500 bg-red-500/10 px-3 py-1 rounded-full">Terjual</span>
-                <h3 class="text-xl font-bold text-white mt-3">Goresan Fajar</h3>
-                <p class="text-slate-400 text-sm mt-2 line-clamp-2">Eksplorasi warna hangat matahari terbit di atas kanvas linen premium.</p>
-                <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
-                    <span class="text-lg font-bold text-slate-500 line-through">Rp 5.000.000</span>
-                    <button disabled class="bg-slate-800 text-slate-600 font-medium text-sm px-4 py-2 rounded-xl cursor-not-allowed border border-slate-700">
-                        Sold Out
-                    </button>
-                </div>
-            </div>
-        </div>
+    <footer class="w-full bg-slate-950 py-8 border-t border-slate-900 text-center">
+        <p class="text-sm text-slate-500">
+            &copy; 2026 <span class="text-amber-500 font-medium">Iwan Poles Art Gallery</span>. All Rights Reserved.
+        </p>
+    </footer>
 
-    </div>
-</main>
-<!-- ABOUT SECTION (PROFIL SENIMAN) -->
-<section class="w-full bg-slate-950 py-16 border-t border-slate-800">
-    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
-        <!-- Foto Seniman (Placeholder avatar keren) -->
-        <div class="flex-1 flex justify-center">
-            <div class="w-64 h-64 rounded-full overflow-hidden border-4 border-amber-500 shadow-2xl">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80" alt="Iwan Poles" class="w-full h-full object-cover">
-            </div>
-        </div>
-        
-        <!-- Cerita Seniman -->
-        <div class="flex-1 text-center md:text-left">
-            <h2 class="text-3xl font-bold text-white mb-4">Di Balik Polesan Kuas</h2>
-            <p class="text-slate-400 leading-relaxed mb-6">
-                Berawal dari coretan dinding di sudut kota bandung, saya mendedikasikan hidup untuk mengeksplorasi emosi manusia, hewan dandi atas kanvas. Setiap karya di <span class="text-amber-500 font-semibold">Iwan Poles Art</span> adalah hasil perenungan mendalam, kombinasi teknik poles tekstur tebal, dan pemilihan warna yang berani.
-            </p>
-            <p class="text-slate-400 leading-relaxed">
-                Bagi saya, lukisan bukan sekadar dekorasi, melainkan sebuah dialog visual yang abadi antara sang seniman dan pemilik ruang.
-            </p>
+    <div id="modal-detail" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
+            
+            <button id="tombol-tutup" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+            
+            <h3 id="modal-judul" class="text-2xl font-bold text-white mb-2">Detail Karya</h3>
+            <div class="h-0.5 w-12 bg-amber-500 mb-4"></div>
+            
+            <table class="w-full text-left text-slate-300 text-sm border-collapse">
+                <tr class="border-b border-slate-700/50"><td class="py-2 font-medium text-slate-400">Media</td><td class="py-2" id="modal-media">Cat Minyak</td></tr>
+                <tr class="border-b border-slate-700/50"><td class="py-2 font-medium text-slate-400">Ukuran</td><td class="py-2" id="modal-ukuran">100 x 120 cm</td></tr>
+                <tr class="border-b border-slate-700/50"><td class="py-2 font-medium text-slate-400">Tahun</td><td class="py-2">2026</td></tr>
+                <tr><td class="py-2 font-medium text-slate-400">Teknik</td><td class="py-2">Polesan Pisau Palet</td></tr>
+            </table>
+            
+            <button class="w-full mt-6 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl transition-all">
+                Tanyakan via WhatsApp
+            </button>
         </div>
     </div>
-</section>
 
-<!-- FOOTER UTAMA -->
-<footer class="w-full bg-slate-950 py-8 border-t border-slate-900 text-center">
-    <p class="text-sm text-slate-500">
-        &copy; 2026 <span class="text-amber-500 font-medium">Iwan Poles Art Gallery</span>. All Rights Reserved. Bbuilt with passion and code.
-    </p>
-</footer>
-
-
-    <!-- SCRIPT JAVASCRIPT KITA -->
     <script>
-        const tombol = document.getElementById("tombol-beli");
-        const judul = document.getElementById("judul-toko");
+    const modal = document.getElementById("modal-detail");
+    const tombolTutup = document.getElementById("tombol-tutup");
+    const modalJudul = document.getElementById("modal-judul");
+    const modalUkuran = document.getElementById("modal-ukuran");
+    const modalMedia = document.getElementById("modal-media");
+    const katalog = document.getElementById("katalog-lukisan");
 
-        tombol.addEventListener("click", function() {
-            alert("Terima kasih! Pesanan lukisan Anda sedang diproses oleh sistem.");
-            judul.className = "text-3xl font-bold text-amber-500 mb-4 transition-all duration-500";
+    // 1. FUNGSI AMBIL DATA DARI DATABASE JSON
+    fetch('lukisan.json')
+        .then(response => response.json())
+        .then(data => {
+            // Tempat nampung HTML kartu lukisan
+            let listKartu = "";
+
+            // Looping semua data lukisan dari database
+            data.forEach(lukisan => {
+                // Atur tampilan tombol berdasarkan status tersedia/terjual
+                let tombolHTML = "";
+                if(lukisan.status === "Tersedia") {
+                    tombolHTML = `<button class="tombol-detail bg-slate-700 hover:bg-amber-500 hover:text-slate-900 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all"
+                                    data-judul="${lukisan.judul}" data-ukuran="${lukisan.ukuran}" data-media="${lukisan.media}">
+                                    Detail
+                                  </button>`;
+                } else {
+                    tombolHTML = `<button disabled class="bg-slate-800 text-slate-600 font-medium text-sm px-4 py-2 rounded-xl cursor-not-allowed border border-slate-700">
+                                    Sold Out
+                                  </button>`;
+                }
+
+                // Susun template kartu HTML-nya
+                listKartu += `
+                    <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg group hover:-translate-y-2 transition-all duration-300">
+                        <div class="w-full h-64 bg-gradient-to-tr ${lukisan.gradient} flex items-center justify-center text-white font-serif italic text-xl shadow-inner">
+                            ${lukisan.judul}
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs font-semibold ${lukisan.status === 'Tersedia' ? 'text-amber-500 bg-amber-500/10' : 'text-red-500 bg-red-500/10'} px-3 py-1 rounded-full">
+                                ${lukisan.status}
+                            </span>
+                            <h3 class="text-xl font-bold text-white mt-3">${lukisan.judul}</h3>
+                            <p class="text-slate-400 text-sm mt-2 line-clamp-2">${lukisan.deskripsi}</p>
+                            <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
+                                <span class="text-lg font-bold ${lukisan.status === 'Tersedia' ? 'text-emerald-400' : 'text-slate-500 line-through'}">${lukisan.harga}</span>
+                                ${tombolHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Masukkan semua kartu yang udah dirakit ke dalam Grid HTML
+            katalog.innerHTML = listKartu;
+
+            // Jalankan ulang pasang kuping untuk tombol yang baru digambar
+            aktifkanTombolDetail();
+        })
+        .catch(error => console.error("Gagal ngambil data database:", error));
+
+    // 2. FUNGSI PASANG EVENT LISTENER KE TOMBOL DINAMIS
+    function aktifkanTombolDetail() {
+        const semuaTombol = document.querySelectorAll(".tombol-detail");
+        semuaTombol.forEach(tombol => {
+            tombol.addEventListener("click", function() {
+                modalJudul.innerText = this.getAttribute("data-judul");
+                modalUkuran.innerText = this.getAttribute("data-ukuran");
+                modalMedia.innerText = this.getAttribute("data-media");
+                modal.classList.remove("hidden");
+            });
         });
-    </script>
+    }
 
+    // 3. LOGIKA TUTUP MODAL
+    if(tombolTutup) {
+        tombolTutup.addEventListener("click", () => modal.classList.add("hidden"));
+    }
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.add("hidden");
+    });
+</script>
 </body>
 </html>
