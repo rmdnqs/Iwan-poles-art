@@ -8,42 +8,118 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
-<body class="bg-slate-90 min-h-screen text-slate-100 p-6 md:p-12">
+<body class="bg-slate-900 min-h-screen text-slate-100 p-6 md:p-12">
 
     <div class="max-w-2xl mx-auto bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl">
         <div class="flex justify-between items-center mb-8 pb-4 border-b border-slate-700">
             <div>
-            <h1 class="text-2xl font-bold text-white">CMS IWAN POLES ART Galeri</h1>
-            <p class="text-slate-400 text-sm">Input lukisan baru ke dalam katalog web</p>
+                <h1 class="text-2xl font-bold text-white">CMS Iwan Poles Art</h1>
+                <p class="text-slate-400 text-sm">Input lukisan baru ke dalam katalog web</p>
             </div>
             <a href="index.html" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all">
                 Lihat Web Utama ➡️
             </a>
         </div>
 
-        <form id="form-class" class="space-y-6">
+        <form id="form-cms" class="space-y-6">
             <div>
                 <label class="block text-sm font-semibold text-slate-300 mb-2">Judul Lukisan</label>
-                <input type="text" id="input-judul" required-class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" Placeholder="Contoh : Logika Semesta">
+                <input type="text" id="input-judul" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: Logika Semesta">
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Harga (Angka Polos)</label>
+                    <input type="text" id="input-harga" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: 5500000">
+                </div>
+                <div>
                     <label class="block text-sm font-semibold text-slate-300 mb-2">Ukuran</label>
-                <input type="text" id="input-harga" required-class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" Placeholder="Contoh : 100 x 100 cm">
+                    <input type="text" id="input-ukuran" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: 100 x 100 cm">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-semibold text-slate-300 mb-2">Media & Bahan</label>
-                <input type="text" id="input-media" required-class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" Placeholder="Contoh : Cat Aklirik di atas Kanvas">
+                    <input type="text" id="input-media" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: Cat Akrilik di atas Kanvas">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Status Karya</label>
+                    <select id="input-status" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
+                        <option value="Tersedia">Tersedia</option>
+                        <option value="Terjual">Terjual</option>
+                    </select>
                 </div>
             </div>
 
+            <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Warna Background Kartu (Gradasi Tailwind)</label>
+                <select id="input-gradient" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
+                    <option value="from-blue-600 to-indigo-900">Biru Tua Mendalam</option>
+                    <option value="from-cyan-600 to-blue-800">Cyan Samudra</option>
+                    <option value="from-amber-600 to-red-800">Merah Fajar Warm</option>
+                    <option value="from-emerald-600 to-teal-900">Hijau Emerald</option>
+                    <option value="from-purple-600 to-fuchsia-900">Ungu Magis</option>
+                </select>
+            </div>
 
+            <div>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Deskripsi Lukisan</label>
+                <textarea id="input-deskripsi" rows="3" required class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:outline-none focus:border-amber-500" placeholder="Ceritakan makna atau emosi di balik lukisan ini..."></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-xl transition-all shadow-lg shadow-amber-500/20 cursor-pointer">
+                Simpan & Publikasikan Karya
+            </button>
         </form>
     </div>
-    
+
+    <script>
+        const form = document.getElementById("form-cms");
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault(); // Mencegah halaman reload otomatis pas disubmit
+
+            // 1. Ambil semua value dari form
+            const lukisanBaru = {
+                id: Date.now(), // Bikin ID unik pake timestamp waktu saat ini
+                judul: document.getElementById("input-judul").value,
+                harga: document.getElementById("input-harga").value,
+                ukuran: document.getElementById("input-ukuran").value,
+                media: document.getElementById("input-media").value,
+                status: document.getElementById("input-status").value,
+                deskripsi: document.getElementById("input-deskripsi").value,
+                gradient: document.getElementById("input-gradient").value
+            };
+
+            // 2. Ambil data database yang udah ada di localStorage (kalau belum ada, bikin array kosong)
+            let databaseLokal = JSON.parse(localStorage.getItem("database_lukisan")) || [];
+
+            // 3. Masukkan lukisan baru ke dalam database lokal
+            databaseLokal.push(lukisanBaru);
+
+            // 4. Kunci dan simpan kembali ke memori browser
+            localStorage.setItem("database_lukisan", JSON.stringify(databaseLokal));
+
+            // 5. Notifikasi Sukses & Reset Form
+            alert(`Sukses! Lukisan "${lukisanBaru.judul}" berhasil dipublikasikan.`);
+            form.reset();
+        });
+
+        const inputHarga = document.getElementById("input-harga");
+
+        // 1. Fungsi rahasia format angka pas diketik admin
+        inputHarga.addEventListener("input", function (e) {
+            // Ambil angka polos saja, buang semua huruf/titik
+            let nilai = this.value.replace(/[^0-9]/g, "");
+            
+            // Kasih separator titik setiap 3 angka
+            if (nilai) {
+                this.value = new Intl.NumberFormat("id-ID").format(nilai);
+            } else {
+                this.value = "";
+            }
+        });
+    </script>
 </body>
 </html>
