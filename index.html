@@ -103,55 +103,58 @@
                 <tr><td class="py-2 font-medium text-slate-400">Teknik</td><td class="py-2">Polesan Pisau Palet</td></tr>
             </table>
             
-            <button class="w-full mt-6 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl transition-all">
-                Tanyakan via WhatsApp
-            </button>
+            <!-- Bagian Bawah Modal (Tempat Tombol) -->
+            <div class="flex flex-col sm:flex-row gap-3 mt-8 pt-4 border-t border-slate-700">
+                <!-- TOMBOL WHATSAPP (Kita pakai tag <a> agar bisa nge-link ke WA) -->
+                <a id="tombol-wa" target="_blank" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold text-center py-3 rounded-xl transition-all cursor-pointer">
+                    💬 Tanya via WhatsApp
+                </a>
+                
+                <!-- Tombol Tutup Modal yang sudah ada -->
+                <button id="tombol-tutup" class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-3 px-6 rounded-xl transition-all cursor-pointer">
+                    Tutup
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
     const modal = document.getElementById("modal-detail");
-    const tombolTutup = document.getElementById("tombol-tutup");
+    // Gunakan querySelectorAll karena di HTML ada dua tombol tutup
+    const tombolTutup = document.querySelectorAll("#tombol-tutup");
     const modalJudul = document.getElementById("modal-judul");
     const modalUkuran = document.getElementById("modal-ukuran");
     const modalMedia = document.getElementById("modal-media");
     const katalog = document.getElementById("katalog-lukisan");
 
     // 0. Fungsi Separator IDR 
-
-    // Fungsi sakti untuk mengubah angka polos jadi Format Rupiah otomatis
     function formatRupiah(angka) {
-    // Menghilangkan karakter non-angka jika admin gak sengaja ngetik huruf/titik/Rp
-    let angkaPolos = String(angka).replace(/[^0-9]/g, '');
-    
-    // Gunakan fitur bawaan browser untuk convert ke format mata uang Indonesia
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0
-    }).format(angkaPolos);
-}
+        let angkaPolos = String(angka).replace(/[^0-9]/g, '');
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(angkaPolos);
+    }
 
-    // 1. FUNGSI UTAMA AMBIL DATA (Pintar CEK CMS dulu bari ke file json)
-    
+    // 1. FUNGSI UTAMA AMBIL DATA
     function muatKatalog(){
-        let databaseCMS =  JSON.parse(localStorage.getItem("database_lukisan"));
+        let databaseCMS = JSON.parse(localStorage.getItem("database_lukisan"));
 
         if(databaseCMS && databaseCMS.length > 0 ){
-            //Jika ada data di CMS localStorage, langsung ambil !
             gambarKartuKatalog(databaseCMS);
-        } else{
-            //JIka CMS Masih Kosong, ambil data bawaan dari file lukisan json
-        fetch('lukisan.json')
-            then(response=>response.JSON())
-            then(data=>{
-                gambarKartuKatalog(data);
-            })
-            .catch(error => console.error("Gagal ngambil data database:", error));
+        } else {
+            // Sudah diperbaiki: ditambah titik (.) dan diganti jadi .json() kecil
+            fetch('lukisan.json')
+                .then(response => response.json())
+                .then(data => {
+                    gambarKartuKatalog(data);
+                })
+                .catch(error => console.error("Gagal ngambil data database:", error));
         }
     }
 
-    //FUNGSI UNTUK MENGGAMBAR KARTU (Logika lamamu, kita bungkus jadi fungsi mandiri)
+    // 2. FUNGSI UNTUK MENGGAMBAR KARTU
     function gambarKartuKatalog(dataLukisan) {
         let listKartu = "";
 
@@ -189,32 +192,52 @@
         });
 
         katalog.innerHTML = listKartu;
+        
+        // Langsung panggil pasang kuping tombol setelah kartu digambar
         aktifkanTombolDetail();
     }
 
-    // Eksekusi fungsi muat katalog saat halaman dibuka
-    muatKatalog();
-
-    // 2. FUNGSI PASANG EVENT LISTENER KE TOMBOL DINAMIS
+    // 3. FUNGSI EVENT LISTENER TOMBOL DETAIL & INTEGRASI WA (Berdiri Sendiri)
     function aktifkanTombolDetail() {
         const semuaTombol = document.querySelectorAll(".tombol-detail");
+        const tombolWa = document.getElementById("tombol-wa"); 
+        const nomorHp = "6285896246975"; // konsisten pake camelCase huruf kecil
+
         semuaTombol.forEach(tombol => {
             tombol.addEventListener("click", function() {
-                modalJudul.innerText = this.getAttribute("data-judul");
-                modalUkuran.innerText = this.getAttribute("data-ukuran");
-                modalMedia.innerText = this.getAttribute("data-media");
+                const judul = this.getAttribute("data-judul");
+                const ukuran = this.getAttribute("data-ukuran");
+                const media  = this.getAttribute("data-media");
+
+                // Sudah diperbaiki dari closet -> closest
+                const harga = this.closest('.p-6').querySelector('.text-lg').innerText;
+
+                modalJudul.innerText = judul;
+                modalUkuran.innerText = ukuran; 
+                modalMedia.innerText = media;
+
+                const teksPesan = `Halo Kang Iwan Poles, saya tertarik dengan karya lukisan anda:\n\n*Judul:* ${judul}\n*Ukuran:* ${ukuran}\n*Media:* ${media}\n*Harga:* ${harga}\n\nApakah lukisan ini masih tersedia?`;
+                const teksAmanURL = encodeURIComponent(teksPesan);
+
+                // Sudah diperbaiki: variabel nomorHp disamakan
+                tombolWa.href = `https://api.whatsapp.com/send?phone=${nomorHp}&text=${teksAmanURL}`;
+
                 modal.classList.remove("hidden");
             });
         });
     }
 
-    // 3. LOGIKA TUTUP MODAL
-    if(tombolTutup) {
-        tombolTutup.addEventListener("click", () => modal.classList.add("hidden"));
-    }
+    // 4. LOGIKA TUTUP MODAL (Berlaku untuk semua tombol bertanda id="tombol-tutup")
+    tombolTutup.forEach(tombol => {
+        tombol.addEventListener("click", () => modal.classList.add("hidden"));
+    });
+
     modal.addEventListener("click", (e) => {
         if (e.target === modal) modal.classList.add("hidden");
     });
+
+    // Eksekusi muat data pertama kali halaman dibuka
+    muatKatalog();
 </script>
 </body>
 </html>
