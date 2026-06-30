@@ -104,7 +104,8 @@
         <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
             
             <button id="tombol-tutup" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
-            
+            <!-- PASANG BARIS INI DI DALAM MODAL DETAIL LU CS, BIAR GAMBARNYA MUNCUL DI SINI -->
+            <div id="modal-foto-container"></div>
             <h3 id="modal-judul" class="text-2xl font-bold text-white mb-2">Detail Karya</h3>
             <div class="h-0.5 w-12 bg-amber-500 mb-4"></div>
             
@@ -130,16 +131,24 @@
         </div>
     </div>
 
-    <script>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // ======= TEMPEL KUNCI CLOUD LU DI SINI Cs! =======
+    const SUPABASE_URL = "https://wnlbsvykmxgeoxddmpus.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_14Keu0yX40rrR2CfD9neog_noP4c6kI"; // Pastikan token anon panjang lu di sini
+    const dbCloud = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const modal = document.getElementById("modal-detail");
-    // Gunakan querySelectorAll karena di HTML ada dua tombol tutup
     const tombolTutup = document.querySelectorAll("#tombol-tutup");
     const modalJudul = document.getElementById("modal-judul");
     const modalUkuran = document.getElementById("modal-ukuran");
     const modalMedia = document.getElementById("modal-media");
     const katalog = document.getElementById("katalog-lukisan");
 
-    // 0. Fungsi Separator IDR 
+    let masterDataLukisan = [];
+
+    // 0. Fungsi Separator IDR untuk Tampilan Harga Kartu
     function formatRupiah(angka) {
         let angkaPolos = String(angka).replace(/[^0-9]/g, '');
         return new Intl.NumberFormat('id-ID', {
@@ -149,38 +158,45 @@
         }).format(angkaPolos);
     }
 
-    // Bikin variabel global di luar fungsi untuk menampung master data lukisan
-    let masterDataLukisan = [];
+    // 1. FUNGSI UTAMA AMBIL DATA DARI CLOUD
+    async function muatKatalog(){
+        katalog.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Memuat karya indah dari server cloud...</div>`;
+        
+        let { data: databaseCloud, error } = await dbCloud
+            .from('lukisan')
+            .select('*')
+            .order('id', { ascending: false });
 
-    // 1. FUNGSI UTAMA AMBIL DATA
-    function muatKatalog(){
-        let databaseCMS = JSON.parse(localStorage.getItem("database_lukisan"));
-
-        if(databaseCMS && databaseCMS.length > 0 ){
-            masterDataLukisan = databaseCMS; // Simpan ke master data
-            gambarKartuKatalog(masterDataLukisan);
-            aktifkanFiturFilter(); // Nyalakan mesin filternya
-        } else {
-            fetch('lukisan.json')
-                .then(response => response.json())
-                .then(data => {
-                    masterDataLukisan = data; // Simpan ke master data
-                    gambarKartuKatalog(masterDataLukisan);
-                    aktifkanFiturFilter(); // Nyalakan mesin filternya
-                })
-                .catch(error => console.error("Gagal ngambil data database:", error));
+        if (error) {
+            console.error("Gagal mengambil data:", error);
+            katalog.innerHTML = `<div class="col-span-full text-center py-12 text-red-400">Gagal memuat katalog: ${error.message}</div>`;
+            return;
         }
+
+        masterDataLukisan = databaseCloud || [];
+        gambarKartuKatalog(masterDataLukisan);
+        aktifkanFiturFilter();
     }
 
-    // 2. FUNGSI UNTUK MENGGAMBAR KARTU
+    // 2. FUNGSI UNTUK MENGGAMBAR KARTU KATALOG
     function gambarKartuKatalog(dataLukisan) {
         let listKartu = "";
 
-        dataLukisan.forEach(lukisan => {
+        if (!dataLukisan || dataLukisan.length === 0) {
+            katalog.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 italic">Tidak ada lukisan dalam kategori ini.</div>`;
+            return;
+        }
+
+        dataLukisan.forEach((lukisan) => {
+            if (!lukisan || !lukisan.judul) return; 
+
+            const urlGambar = lukisan.gambar ? lukisan.gambar : 'https://placehold.co/600x400?text=Iwan+Poles+Art';
+            const hargaMurni = lukisan.harga ? lukisan.harga : 0;
+
             let tombolHTML = "";
-            if(lukisan.status === "Tersedia") {
-                tombolHTML = `<button class="tombol-detail bg-slate-700 hover:bg-amber-500 hover:text-slate-900 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all"
-                                data-judul="${lukisan.judul}" data-ukuran="${lukisan.ukuran}" data-media="${lukisan.media}">
+            if (lukisan.status === "Tersedia") {
+                tombolHTML = `<button class="tombol-detail bg-slate-700 hover:bg-amber-500 hover:text-slate-900 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all cursor-pointer"
+                                data-judul="${lukisan.judul}" data-ukuran="${lukisan.ukuran || 'Ukuran Khusus'}" data-media="${lukisan.media || 'Kanvas'}" data-gambar="${urlGambar}">
                                 Detail
                               </button>`;
             } else {
@@ -191,17 +207,20 @@
 
             listKartu += `
                 <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg group hover:-translate-y-2 transition-all duration-300">
-                    <div class="w-full h-64 bg-gradient-to-tr ${lukisan.gradient} flex items-center justify-center text-white font-serif italic text-xl shadow-inner">
-                        ${lukisan.judul}
+                    <div class="w-full h-64 overflow-hidden bg-slate-950 flex items-center justify-center relative">
+                        <img src="${urlGambar}" 
+                             alt="${lukisan.judul}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/600x400?text=Gambar+Gagal+Dimuat'">
                     </div>
                     <div class="p-6">
-                        <span class="text-xs font-semibold ${lukisan.status === 'Tersedia' ? 'text-amber-500 bg-amber-500/10' : 'text-red-500 bg-red-500/10'} px-3 py-1 rounded-full">
-                            ${lukisan.status}
+                        <span class="text-xs font-semibold ${lukisan.status === 'Terjual' ? 'text-red-500 bg-red-500/10' : 'text-amber-500 bg-amber-500/10'} px-3 py-1 rounded-full">
+                            ${lukisan.status || 'Tersedia'}
                         </span>
                         <h3 class="text-xl font-bold text-white mt-3">${lukisan.judul}</h3>
-                        <p class="text-slate-400 text-sm mt-2 line-clamp-2">${lukisan.deskripsi}</p>
+                        <p class="text-slate-400 text-sm mt-2 line-clamp-2">${lukisan.deskripsi || 'Tidak ada deskripsi.'}</p>
                         <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
-                            <span class="text-lg font-bold ${lukisan.status === 'Tersedia' ? 'text-emerald-400' : 'text-slate-500 line-through'}">${formatRupiah(lukisan.harga)}</span>
+                            <span class="text-lg font-bold ${lukisan.status === 'Tersedia' ? 'text-emerald-400' : 'text-slate-500 line-through'}">${formatRupiah(hargaMurni)}</span>
                             ${tombolHTML}
                         </div>
                     </div>
@@ -210,34 +229,77 @@
         });
 
         katalog.innerHTML = listKartu;
-        
-        // Langsung panggil pasang kuping tombol setelah kartu digambar
         aktifkanTombolDetail();
     }
 
-    // 3. FUNGSI EVENT LISTENER TOMBOL DETAIL & INTEGRASI WA (Berdiri Sendiri)
+    // 3. FUNGSI UTAMA DETAIL, WA, & KINEMATIC HOVER ZOOM MURNI CSS/JS
     function aktifkanTombolDetail() {
         const semuaTombol = document.querySelectorAll(".tombol-detail");
         const tombolWa = document.getElementById("tombol-wa"); 
-        const nomorHp = "6285896246975"; // konsisten pake camelCase huruf kecil
+        const nomorHp = "6285896246975"; 
 
         semuaTombol.forEach(tombol => {
             tombol.addEventListener("click", function() {
                 const judul = this.getAttribute("data-judul");
                 const ukuran = this.getAttribute("data-ukuran");
                 const media  = this.getAttribute("data-media");
-
-                // Sudah diperbaiki dari closet -> closest
+                const linkFoto = this.getAttribute("data-gambar");
                 const harga = this.closest('.p-6').querySelector('.text-lg').innerText;
 
                 modalJudul.innerText = judul;
                 modalUkuran.innerText = ukuran; 
                 modalMedia.innerText = media;
 
+                // --- INJEKSI CONTAINER ZOOM PREMIUM ---
+                let wadahFotoModal = document.getElementById("modal-foto-container");
+                if (wadahFotoModal) {
+                    wadahFotoModal.innerHTML = `
+                        <div id="pan-zoom-frame" class="relative w-full h-64 md:h-80 bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center border border-slate-700 mb-4 cursor-zoom-in group/frame">
+                            <img id="foto-mahakarya" src="${linkFoto}" class="w-full h-full object-contain pointer-events-none transition-transform duration-200 ease-out origin-center" style="transform: scale(1);">
+                            <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur text-[10px] text-slate-400 px-2 py-1 rounded border border-slate-700 tracking-wide uppercase pointer-events-none group-hover/frame:opacity-0 transition-opacity">
+                                💡 Gerakkan Kursor Untuk Zoom
+                            </div>
+                        </div>
+                    `;
+
+                    const frame = document.getElementById("pan-zoom-frame");
+                    const img = document.getElementById("foto-mahakarya");
+
+                    // A. Efek Gerakan Kursor Mouse (Desktop)
+                    frame.addEventListener("mousemove", (e) => {
+                        const r = frame.getBoundingClientRect();
+                        const x = ((e.clientX - r.left) / r.width) * 100;
+                        const y = ((e.clientY - r.top) / r.height) * 100;
+                        
+                        img.style.transformOrigin = `${x}% ${y}%`;
+                        img.style.transform = "scale(2.2)"; // Tingkat kedalaman zoom (2.2x)
+                    });
+
+                    // B. Kursor Keluar Frame (Reset Balik Normal)
+                    frame.addEventListener("mouseleave", () => {
+                        img.style.transformOrigin = "center center";
+                        img.style.transform = "scale(1)";
+                    });
+
+                    // C. Klik / Double Click to Extra Zoom Toggle
+                    let isExtraZoom = false;
+                    frame.addEventListener("click", () => {
+                        isExtraZoom = !isExtraZoom;
+                        if(isExtraZoom) {
+                            frame.classList.remove("cursor-zoom-in");
+                            frame.classList.add("cursor-zoom-out");
+                            img.style.transform = "scale(3)";
+                        } else {
+                            frame.classList.remove("cursor-zoom-out");
+                            frame.classList.add("cursor-zoom-in");
+                            img.style.transform = "scale(1)";
+                        }
+                    });
+                }
+                // --------------------------------------
+
                 const teksPesan = `Halo Kang Iwan Poles, saya tertarik dengan karya lukisan anda:\n\n*Judul:* ${judul}\n*Ukuran:* ${ukuran}\n*Media:* ${media}\n*Harga:* ${harga}\n\nApakah lukisan ini masih tersedia?`;
                 const teksAmanURL = encodeURIComponent(teksPesan);
-
-                // Sudah diperbaiki: variabel nomorHp disamakan
                 tombolWa.href = `https://api.whatsapp.com/send?phone=${nomorHp}&text=${teksAmanURL}`;
 
                 modal.classList.remove("hidden");
@@ -245,7 +307,31 @@
         });
     }
 
-    // 4. LOGIKA TUTUP MODAL (Berlaku untuk semua tombol bertanda id="tombol-tutup")
+    // 4. LOGIKA FILTER KATEGORI
+    function aktifkanFiturFilter() {
+        const tombolFilter = document.querySelectorAll(".btn-filter");
+        tombolFilter.forEach(tombol => {
+            tombol.addEventListener("click", function() {
+                const kategori = this.getAttribute("data-filter");
+
+                tombolFilter.forEach(btn => {
+                    btn.classList.remove("bg-amber-500", "text-slate-900", "font-bold");
+                    btn.classList.add("bg-slate-800", "text-slate-300", "font-semibold");
+                });
+                this.classList.remove("bg-slate-800", "text-slate-300", "font-semibold");
+                this.classList.add("bg-amber-500", "text-slate-900", "font-bold");
+
+                if (kategori === "Semua") {
+                    gambarKartuKatalog(masterDataLukisan);
+                } else {
+                    const dataHasilFilter = masterDataLukisan.filter(lukisan => lukisan.status === kategori);
+                    gambarKartuKatalog(dataHasilFilter);
+                }
+            });
+        });
+    }
+
+    // 5. LOGIKA TUTUP MODAL
     tombolTutup.forEach(tombol => {
         tombol.addEventListener("click", () => modal.classList.add("hidden"));
     });
@@ -254,37 +340,7 @@
         if (e.target === modal) modal.classList.add("hidden");
     });
 
-    // Eksekusi muat data pertama kali halaman dibuka
     muatKatalog();
-
-    // 5. LOGIKA FILTER KATEGORI (REAL-TIME)
-    function aktifkanFiturFilter() {
-        const tombolFilter = document.querySelectorAll(".btn-filter");
-
-        tombolFilter.forEach(tombol => {
-            tombol.addEventListener("click", function() {
-                // Ambil status apa yang mau difilter (Semua / Tersedia / Terjual)
-                const kategori = this.getAttribute("data-filter");
-
-                // 1. Atur Efek Warna Tombol Aktif/Nonaktif
-                tombolFilter.forEach(btn => {
-                    btn.classList.remove("bg-amber-500", "text-slate-900", "font-bold");
-                    btn.classList.add("bg-slate-800", "text-slate-300", "font-semibold");
-                });
-                this.classList.remove("bg-slate-800", "text-slate-300", "font-semibold");
-                this.classList.add("bg-amber-500", "text-slate-900", "font-bold");
-
-                // 2. Logika Penyaringan Data Array
-                if (kategori === "Semua") {
-                    gambarKartuKatalog(masterDataLukisan); // Gambar semua data
-                } else {
-                    // Saring array: Hanya ambil data yang statusnya COCOK dengan tombol yang diklik
-                    const dataHasilFilter = masterDataLukisan.filter(lukisan => lukisan.status === kategori);
-                    gambarKartuKatalog(dataHasilFilter); // Gambar data yang lolos filter
-                }
-            });
-        });
-    }
 </script>
 </body>
 </html>

@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS Admin Dasbor - Iwan Poles Art</title>
+    <title>CMS SQL Cloud - Iwan Poles Art</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
 <body class="bg-slate-900 min-h-screen text-slate-100 p-6 md:p-12">
 
     <div class="max-w-4xl mx-auto space-y-12">
-        
-        <!-- FORM INPUT LUKISAN BARU -->
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl">
-            <!-- Header CMS -->
             <div class="flex justify-between items-center mb-8 pb-4 border-b border-slate-700">
                 <div>
-                    <h1 class="text-2xl font-bold text-white">CMS Iwan Poles Art</h1>
-                    <p class="text-slate-400 text-sm">Input lukisan baru ke dalam katalog web</p>
+                    <h1 class="text-2xl font-bold text-white">CMS Dashboard</h1>
+                    <p class="text-slate-400 text-sm">Iwan Poles ART Galeri</p>
                 </div>
                 <a href="index.html" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all">
                     Lihat Web Utama ➡️
                 </a>
             </div>
 
-            <!-- Form Input -->
             <form id="form-cms" class="space-y-6">
                 <div>
                     <label class="block text-sm font-semibold text-slate-300 mb-2">Judul Lukisan</label>
-                    <input type="text" id="input-judul" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: Logika Semesta">
+                    <input type="text" id="input-judul" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-300 mb-2">Harga (Angka Otomatis Titik)</label>
-                        <input type="text" id="input-harga" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: 5.500.000">
+                        <label class="block text-sm font-semibold text-slate-300 mb-2">Harga</label>
+                        <input type="text" id="input-harga" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-300 mb-2">Ukuran</label>
-                        <input type="text" id="input-ukuran" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: 100 x 100 cm">
+                        <input type="text" id="input-ukuran" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="100 x 100 cm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold text-slate-300 mb-2">Media & Bahan</label>
-                        <input type="text" id="input-media" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: Cat Akrilik di atas Kanvas">
+                        <input type="text" id="input-media" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-300 mb-2">Status Karya</label>
@@ -58,164 +55,191 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-300 mb-2">Warna Background Kartu (Gradasi Tailwind)</label>
-                    <select id="input-gradient" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
-                        <option value="from-blue-600 to-indigo-900">Biru Tua Mendalam</option>
-                        <option value="from-cyan-600 to-blue-800">Cyan Samudra</option>
-                        <option value="from-amber-600 to-red-800">Merah Fajar Warm</option>
-                        <option value="from-emerald-600 to-teal-900">Hijau Emerald</option>
-                        <option value="from-purple-600 to-fuchsia-900">Ungu Magis</option>
-                    </select>
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Upload Foto Lukisan asli</label>
+                    <input type="file" id="input-gambar" accept="image/*" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 file:mr-4 file:py-1 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-900 hover:file:bg-amber-600 cursor-pointer">
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-300 mb-2">Deskripsi Lukisan</label>
-                    <textarea id="input-deskripsi" rows="3" required class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:outline-none focus:border-amber-500" placeholder="Ceritakan makna atau emosi di balik lukisan ini..."></textarea>
+                    <textarea id="input-deskripsi" rows="3" required class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:outline-none focus:border-amber-500"></textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-xl transition-all shadow-lg shadow-amber-500/20 cursor-pointer">
-                    Simpan & Publikasikan Karya
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-xl transition-all cursor-pointer">
+                    Simpan Data Lukisan
                 </button>
             </form>
         </div>
 
-        <!-- TABEL DAFTAR MANAJEMEN LUKISAN -->
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl">
-            <h2 class="text-xl font-bold text-white mb-2">Manajemen Koleksi Lukisan</h2>
-            <p class="text-slate-400 text-sm mb-6">Kelola karya yang sudah di-input (Ubah status terjual atau hapus data)</p>
-            
+            <h2 class="text-xl font-bold text-white mb-6">Daftar data Lukisan</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-700 text-slate-400 uppercase text-xs tracking-wider">
+                        <tr class="border-b border-slate-700 text-slate-400 uppercase text-xs">
                             <th class="py-3 px-4">Lukisan</th>
                             <th class="py-3 px-4">Harga</th>
                             <th class="py-3 px-4">Status</th>
                             <th class="py-3 px-4 text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="tabel-koleksi" class="divide-y divide-slate-700/50">
-                        <!-- Data digambar dinamis oleh JavaScript -->
-                    </tbody>
+                    <tbody id="tabel-koleksi" class="divide-y divide-slate-700/50"></tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
-    <!-- LOGIKA INTERNALS SCRIPT CMS -->
     <script>
-        const form = document.getElementById("form-cms");
-        const inputHarga = document.getElementById("input-harga");
-        const tabelKoleksi = document.getElementById("tabel-koleksi");
+    // ======= TEMPEL KUNCI LU DI SINI Cs! =======
+    const SUPABASE_URL = "https://wnlbsvykmxgeoxddmpus.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_14Keu0yX40rrR2CfD9neog_noP4c6kI"; // Pastikan token anon panjang lu di sini
+    
+    const dbCloud = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 0. Fungsi Separator Angka Rupiah Otomatis Pas Diketik Admin
+    const form = document.getElementById("form-cms");
+    const inputHarga = document.getElementById("input-harga") || document.getElementById("harga");
+    const tabelKoleksi = document.getElementById("tabel-koleksi");
+
+    // Separator Harga Otomatis
+    if (inputHarga) {
         inputHarga.addEventListener("input", function () {
             let nilai = this.value.replace(/[^0-9]/g, "");
             this.value = nilai ? new Intl.NumberFormat("id-ID").format(nilai) : "";
         });
+    }
 
-        // 1. Fungsi Menampilkan Data Lukisan ke Tabel Manajemen
-        function muatTabelManajemen() {
-            let databaseLokal = JSON.parse(localStorage.getItem("database_lukisan")) || [];
-            let listBaris = "";
+    // 1. SELECT DATA LUKISAN
+    async function muatTabelManajemen() {
+        if (!tabelKoleksi) return;
+        tabelKoleksi.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">Menghubungkan ke database cloud...</td></tr>`;
+        
+        let { data: databaseLukisan, error } = await dbCloud
+            .from('lukisan')
+            .select('*')
+            .order('id', { ascending: false });
 
-            if (databaseLokal.length === 0) {
-                tabelKoleksi.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-slate-500 italic">Belum ada lukisan di database CMS lokal. Silakan tambah di atas.</td></tr>`;
-                return;
-            }
+        if (error) {
+            console.error(error);
+            return;
+        }
 
-            databaseLokal.forEach((lukisan) => {
-                // Formatter Rupiah Sederhana untuk tabel
-                let hargaFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(lukisan.harga);
-                
-                listBaris += `
-                    <tr class="hover:bg-slate-750/50 transition-colors">
-                        <td class="py-4 px-4">
+        if (!databaseLukisan || databaseLukisan.length === 0) {
+            tabelKoleksi.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-slate-500 italic">Tabel database PostgreSQL kosong.</td></tr>`;
+            return;
+        }
+
+        let listBaris = "";
+        databaseLukisan.forEach((lukisan) => {
+            let hargaFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(lukisan.harga);
+            
+            listBaris += `
+                <tr class="hover:bg-slate-750/50 transition-colors">
+                    <td class="py-4 px-4 flex items-center gap-3">
+                        <img src="${lukisan.gambar || 'https://placehold.co/50'}" class="w-10 h-10 object-cover rounded-lg bg-slate-700">
+                        <div>
                             <div class="font-bold text-white">${lukisan.judul}</div>
                             <div class="text-xs text-slate-400 mt-0.5">${lukisan.ukuran} | ${lukisan.media}</div>
-                        </td>
-                        <td class="py-4 px-4 text-slate-300">${hargaFormatted}</td>
-                        <td class="py-4 px-4">
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">
-                                ${lukisan.status}
-                            </span>
-                        </td>
-                        <td class="py-4 px-4">
-                            <div class="flex justify-center gap-2">
-                                <button onclick="toggleStatus(${lukisan.id})" class="text-xs bg-slate-700 hover:bg-amber-500 hover:text-slate-900 font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer">
-                                    🔄 Ubah Status
-                                </button>
-                                <button onclick="hapusLukisan(${lukisan.id}, '${lukisan.judul}')" class="text-xs bg-red-950 text-red-400 hover:bg-red-500 hover:text-white font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer">
-                                    🗑️ Hapus
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tabelKoleksi.innerHTML = listBaris;
-        }
-
-        // 2. Proses Tambah Data Lukisan Baru via Form
-        form.addEventListener("submit", function(e) {
-            e.preventDefault(); 
-
-            const lukisanBaru = {
-                id: Date.now(), // ID Unik berbasis waktu milidetik
-                judul: document.getElementById("input-judul").value,
-                harga: inputHarga.value.replace(/\./g, ""), // Bersihkan titik sebelum disimpan
-                ukuran: document.getElementById("input-ukuran").value,
-                media: document.getElementById("input-media").value,
-                status: document.getElementById("input-status").value,
-                deskripsi: document.getElementById("input-deskripsi").value,
-                gradient: document.getElementById("input-gradient").value
-            };
-
-            let databaseLokal = JSON.parse(localStorage.getItem("database_lukisan")) || [];
-            databaseLokal.push(lukisanBaru);
-            localStorage.setItem("database_lukisan", JSON.stringify(databaseLokal));
-
-            alert(`Sukses! Lukisan "${lukisanBaru.judul}" berhasil dipublikasikan.`);
-            form.reset();
-            
-            // Refresh tabel manajemen setelah data bertambah
-            muatTabelManajemen();
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-slate-300">${hargaFormatted}</td>
+                    <td class="py-4 px-4">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">
+                            ${lukisan.status}
+                        </span>
+                    </td>
+                    <td class="py-4 px-4 text-center">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="toggleStatus(${lukisan.id}, '${lukisan.status}')" class="text-xs bg-slate-700 hover:bg-amber-500 hover:text-slate-900 font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer">🔄 Status</button>
+                            <button onclick="hapusLukisan(${lukisan.id}, '${lukisan.judul}')" class="text-xs bg-red-950 text-red-400 hover:bg-red-500 hover:text-white font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer">🗑️ Hapus</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
         });
+        tabelKoleksi.innerHTML = listBaris;
+    }
 
-        // 3. Fitur Sakti: Ubah Status (Tersedia <=> Terjual)
-        function toggleStatus(idLukisan) {
-            let databaseLokal = JSON.parse(localStorage.getItem("database_lukisan")) || [];
-            
-            // Cari lukisan berdasarkan ID-nya, lalu ganti statusnya secara bergantian
-            databaseLokal = databaseLokal.map(lukisan => {
-                if (lukisan.id === idLukisan) {
-                    lukisan.status = lukisan.status === "Tersedia" ? "Terjual" : "Tersedia";
+    // 2. INSERT DATA DENGAN PROSES UPLOAD FILE GAMBAR KE STORAGE CLOUD
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault(); 
+
+        const hargaMurni = parseInt(inputHarga.value.replace(/\./g, ""));
+        if (isNaN(hargaMurni)) { return alert("Format harga salah!"); }
+
+        const fileGambar = document.getElementById("input-gambar").files[0];
+        if (!fileGambar) { return alert("Pilih foto lukisannya dulu, bray!"); }
+
+        // Alert info awal biar admin tau proses sedang berjalan
+        const tombolSubmit = form.querySelector("button[type='submit']");
+        tombolSubmit.innerText = "Sedang Mengupload Foto...";
+        tombolSubmit.disabled = true;
+
+        // Bikin nama file unik pake timestamp biar gak bentrok di cloud storage
+        const namaFileUnik = `${Date.now()}_${fileGambar.name.replace(/\s/g, '_')}`;
+
+        // Langkah A: Upload file ke Supabase Storage Bucket 'foto-lukisan'
+        let { data: uploadData, error: uploadError } = await dbCloud
+            .storage
+            .from('foto-lukisan')
+            .upload(namaFileUnik, fileGambar);
+
+        if (uploadError) {
+            tombolSubmit.innerText = "Simpan & Kirim ke PostgreSQL Cloud";
+            tombolSubmit.disabled = false;
+            return alert("Gagal upload foto ke cloud storage: " + uploadError.message);
+        }
+
+        // Langkah B: Dapatkan URL publik dari gambar yang baru diupload
+        const { data: URLPublic } = dbCloud
+            .storage
+            .from('foto-lukisan')
+            .getPublicUrl(namaFileUnik);
+
+        const urlGambarAsli = URLPublic.publicUrl;
+
+        // Langkah C: Simpan data teks + URL Gambar ke Tabel SQL `lukisan`
+        const { error: insertError } = await dbCloud
+            .from('lukisan')
+            .insert([
+                {
+                    judul: document.getElementById("input-judul").value,
+                    harga: hargaMurni,
+                    ukuran: document.getElementById("input-ukuran").value,
+                    media: document.getElementById("input-media").value,
+                    status: document.getElementById("input-status").value,
+                    deskripsi: document.getElementById("input-deskripsi").value,
+                    gambar: urlGambarAsli, // URL Foto masuk ke kolom SQL
+                    gradient: "from-slate-800 to-slate-900" // Sebagai cadangan saja
                 }
-                return lukisan;
-            });
+            ]);
 
-            localStorage.setItem("database_lukisan", JSON.stringify(databaseLokal));
-            muatTabelManajemen(); // gambar ulang tabel biar statusnya berubah langsung
+        tombolSubmit.innerText = "Simpan & Kirim ke PostgreSQL Cloud";
+        tombolSubmit.disabled = false;
+
+        if (insertError) {
+            alert("Gagal simpan data SQL: " + insertError.message);
+        } else {
+            alert("Sukses Besar! Foto terupload & data lukisan mendarat di database cloud.");
+            form.reset();
+            muatTabelManajemen();
         }
+    });
 
-        // 4. Fitur Sakti: Hapus Lukisan Permanen dari Database Lokal
-        function hapusLukisan(idLukisan, judulLukisan) {
-            // Konfirmasi pengamanan agar tidak sengaja kepencet hapus
-            if (confirm(`Apakah Anda yakin ingin menghapus lukisan "${judulLukisan}" secara permanen?`)) {
-                let databaseLokal = JSON.parse(localStorage.getItem("database_lukisan")) || [];
-                
-                // Saring array: Ambil semua data KECUALI lukisan yang mau kita hapus
-                databaseLokal = databaseLokal.filter(lukisan => lukisan.id !== idLukisan);
-                
-                localStorage.setItem("database_lukisan", JSON.stringify(databaseLokal));
-                muatTabelManajemen(); // gambar ulang tabel
-            }
-        }
-
-        // Jalankan pemuatan tabel manajemen pertama kali halaman admin dibuka
+    // 3. UPDATE STATUS
+    async function toggleStatus(idLukisan, statusSekarang) {
+        const statusBaru = statusSekarang === "Tersedia" ? "Terjual" : "Tersedia";
+        await dbCloud.from('lukisan').update({ status: statusBaru }).eq('id', idLukisan);
         muatTabelManajemen();
-    </script>
+    }
+
+    // 4. DELETE DATA
+    async function hapusLukisan(idLukisan, judulLukisan) {
+        if (confirm(`Hapus permanen "${judulLukisan}" dari server cloud?`)) {
+            await dbCloud.from('lukisan').delete().eq('id', idLukisan);
+            muatTabelManajemen();
+        }
+    }
+
+    muatTabelManajemen();
+</script>
 </body>
 </html>
