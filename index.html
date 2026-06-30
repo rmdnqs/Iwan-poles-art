@@ -60,6 +60,18 @@
         <h2 class="text-3xl font-bold text-white mb-2">Koleksi Lukisan Terbaru</h2>
         <div class="h-1 w-20 bg-amber-500 mx-auto rounded-full"></div>
         <p class="text-slate-400 mt-4">Pilih dan bawa pulang karya yang paling berbicara dengan jiwa Anda.</p>
+        <!-- MENU FILTER KATEGORI -->
+        <div class="flex justify-center items-center gap-3 mt-8 mb-12">
+            <button data-filter="Semua" class="btn-filter bg-amber-500 text-slate-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md cursor-pointer">
+                Semua Karya
+            </button>
+            <button data-filter="Tersedia" class="btn-filter bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-5 py-2.5 rounded-xl text-sm transition-all cursor-pointer">
+                🟢 Tersedia
+            </button>
+            <button data-filter="Terjual" class="btn-filter bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-5 py-2.5 rounded-xl text-sm transition-all cursor-pointer">
+                🔴 Terjual
+            </button>
+        </div>
     </div>
 
     <div id="katalog-lukisan" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
@@ -137,18 +149,24 @@
         }).format(angkaPolos);
     }
 
+    // Bikin variabel global di luar fungsi untuk menampung master data lukisan
+    let masterDataLukisan = [];
+
     // 1. FUNGSI UTAMA AMBIL DATA
     function muatKatalog(){
         let databaseCMS = JSON.parse(localStorage.getItem("database_lukisan"));
 
         if(databaseCMS && databaseCMS.length > 0 ){
-            gambarKartuKatalog(databaseCMS);
+            masterDataLukisan = databaseCMS; // Simpan ke master data
+            gambarKartuKatalog(masterDataLukisan);
+            aktifkanFiturFilter(); // Nyalakan mesin filternya
         } else {
-            // Sudah diperbaiki: ditambah titik (.) dan diganti jadi .json() kecil
             fetch('lukisan.json')
                 .then(response => response.json())
                 .then(data => {
-                    gambarKartuKatalog(data);
+                    masterDataLukisan = data; // Simpan ke master data
+                    gambarKartuKatalog(masterDataLukisan);
+                    aktifkanFiturFilter(); // Nyalakan mesin filternya
                 })
                 .catch(error => console.error("Gagal ngambil data database:", error));
         }
@@ -238,6 +256,35 @@
 
     // Eksekusi muat data pertama kali halaman dibuka
     muatKatalog();
+
+    // 5. LOGIKA FILTER KATEGORI (REAL-TIME)
+    function aktifkanFiturFilter() {
+        const tombolFilter = document.querySelectorAll(".btn-filter");
+
+        tombolFilter.forEach(tombol => {
+            tombol.addEventListener("click", function() {
+                // Ambil status apa yang mau difilter (Semua / Tersedia / Terjual)
+                const kategori = this.getAttribute("data-filter");
+
+                // 1. Atur Efek Warna Tombol Aktif/Nonaktif
+                tombolFilter.forEach(btn => {
+                    btn.classList.remove("bg-amber-500", "text-slate-900", "font-bold");
+                    btn.classList.add("bg-slate-800", "text-slate-300", "font-semibold");
+                });
+                this.classList.remove("bg-slate-800", "text-slate-300", "font-semibold");
+                this.classList.add("bg-amber-500", "text-slate-900", "font-bold");
+
+                // 2. Logika Penyaringan Data Array
+                if (kategori === "Semua") {
+                    gambarKartuKatalog(masterDataLukisan); // Gambar semua data
+                } else {
+                    // Saring array: Hanya ambil data yang statusnya COCOK dengan tombol yang diklik
+                    const dataHasilFilter = masterDataLukisan.filter(lukisan => lukisan.status === kategori);
+                    gambarKartuKatalog(dataHasilFilter); // Gambar data yang lolos filter
+                }
+            });
+        });
+    }
 </script>
 </body>
 </html>
