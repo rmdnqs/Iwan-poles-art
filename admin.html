@@ -1,245 +1,270 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS SQL Cloud - Iwan Poles Art</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+    <title>Sistem CMS Kontrol Panel Terpusat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 min-h-screen text-slate-100 p-6 md:p-12">
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 md:p-12">
 
-    <div class="max-w-4xl mx-auto space-y-12">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl">
-            <div class="flex justify-between items-center mb-8 pb-4 border-b border-slate-700">
-                <div>
-                    <h1 class="text-2xl font-bold text-white">CMS Dashboard</h1>
-                    <p class="text-slate-400 text-sm">Iwan Poles ART Galeri</p>
-                </div>
-                <a href="index.html" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all">
-                    Lihat Web Utama ➡️
-                </a>
+    <div class="max-w-6xl mx-auto space-y-10">
+        <div class="border-b border-slate-800 pb-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-black text-white tracking-tight">CENTRAL CMS ENGINE</h1>
+                <p class="text-slate-400 text-sm mt-1">Otoritas kendali penuh aset, distribusi konten, dan branding visual galeri.</p>
             </div>
-
-            <form id="form-cms" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-300 mb-2">Judul Lukisan</label>
-                    <input type="text" id="input-judul" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-300 mb-2">Harga</label>
-                        <input type="text" id="input-harga" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-300 mb-2">Ukuran</label>
-                        <input type="text" id="input-ukuran" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500" placeholder="100 x 100 cm">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-300 mb-2">Media & Bahan</label>
-                        <input type="text" id="input-media" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-300 mb-2">Status Karya</label>
-                        <select id="input-status" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
-                            <option value="Tersedia">Tersedia</option>
-                            <option value="Terjual">Terjual</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-slate-300 mb-2">Upload Foto Lukisan asli</label>
-                    <input type="file" id="input-gambar" accept="image/*" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 file:mr-4 file:py-1 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-900 hover:file:bg-amber-600 cursor-pointer">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-slate-300 mb-2">Deskripsi Lukisan</label>
-                    <textarea id="input-deskripsi" rows="3" required class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:outline-none focus:border-amber-500"></textarea>
-                </div>
-
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-xl transition-all cursor-pointer">
-                    Simpan Data Lukisan
-                </button>
-            </form>
+            <span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold px-3 py-1.5 rounded-full">Secure Session Connected</span>
         </div>
 
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl">
-            <h2 class="text-xl font-bold text-white mb-6">Daftar data Lukisan</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">📦 Modul Inventaris Lukisan</h2>
+                
+                <form id="form-cms" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Judul Karya</label>
+                            <input type="text" id="input-judul" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Harga Karya (Nominal Angka Polos)</label>
+                            <input type="number" id="input-harga" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Kategori Kurasi Seni</label>
+                            <select id="input-kategori" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500">
+                                <option value="Abstrak">Abstrak</option>
+                                <option value="Realisme">Realisme</option>
+                                <option value="Lanskap">Lanskap</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Ukuran Lukisan</label>
+                            <input type="text" id="input-ukuran" required placeholder="Misal: 120 x 90 cm" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Status Karya</label>
+                            <select id="input-status" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500">
+                                <option value="Tersedia">Tersedia</option>
+                                <option value="Terjual">Terjual</option>
+                                <option value="Dipesan">Dipesan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">File Foto Lukisan</label>
+                            <input type="file" id="input-file-foto" accept="image/*" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Gaya Gradient Kartu</label>
+                            <select id="input-gradient" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500">
+                                <option value="from-amber-500/20 to-transparent">Amber Gradient Warm</option>
+                                <option value="from-blue-500/20 to-transparent">Blue Sapphire Cool</option>
+                                <option value="from-emerald-500/20 to-transparent">Emerald Nature Green</option>
+                                <option value="from-purple-500/20 to-transparent">Royal Purple Velvet</option>
+                                <option value="from-slate-800/50 to-transparent">Minimalist Slate Muted</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Deskripsi Narasi Karya</label>
+                        <textarea id="input-deskripsi" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"></textarea>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+                        <span class="block text-xs font-bold uppercase tracking-widest text-amber-500">Arsitektur Distribusi Konten</span>
+                        <div class="flex flex-col sm:flex-row sm:gap-8 space-y-2 sm:space-y-0">
+                            <label class="flex items-center gap-3 cursor-pointer text-sm">
+                                <input type="checkbox" id="input-featured" class="w-4 h-4 accent-amber-500">
+                                <span>Publish ke Halaman Utama (Featured)</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer text-sm">
+                                <input type="checkbox" id="input-archive" checked class="w-4 h-4 accent-amber-500">
+                                <span>Publish ke Menu Koleksi (Arsip Katalog)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-submit-karya" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl transition-all tracking-wider uppercase text-xs cursor-pointer">
+                        Eksekusi Masuk Database Cloud
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">🎨 Kontrol Warna & Branding Web</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">URL Image Logo</label>
+                        <input type="text" id="theme-logo" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Nama Utama Galeri</label>
+                        <input type="text" id="theme-nama" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Deskripsi Utama Hero</label>
+                        <textarea id="theme-deskripsi-hero" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">BG Utama</label>
+                            <input type="color" id="theme-bg-utama" value="#0f172a" class="w-full h-10 bg-transparent border-0 cursor-pointer rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">BG Komponen</label>
+                            <input type="color" id="theme-bg-komponen" value="#1e293b" class="w-full h-10 bg-transparent border-0 cursor-pointer rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Warna Aksen</label>
+                            <input type="color" id="theme-aksen" value="#f59e0b" class="w-full h-10 bg-transparent border-0 cursor-pointer rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Teks Utama</label>
+                            <input type="color" id="theme-teks" value="#ffffff" class="w-full h-10 bg-transparent border-0 cursor-pointer rounded-md">
+                        </div>
+                    </div>
+                    <button id="btn-simpan-tema" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer">
+                        Deploy Perubahan Tema Global
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">📋 Semua List Lukisan di Database</h2>
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm border-collapse">
+                <table class="w-full text-left border-collapse text-sm text-slate-300">
                     <thead>
-                        <tr class="border-b border-slate-700 text-slate-400 uppercase text-xs">
-                            <th class="py-3 px-4">Lukisan</th>
-                            <th class="py-3 px-4">Harga</th>
-                            <th class="py-3 px-4">Status</th>
-                            <th class="py-3 px-4 text-center">Aksi</th>
+                        <tr class="border-b border-slate-800 bg-slate-950 text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <th class="p-4">Foto</th>
+                            <th class="p-4">Judul Karya</th>
+                            <th class="p-4">Kategori</th>
+                            <th class="p-4">Ukuran</th>
+                            <th class="p-4">Harga</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="tabel-koleksi" class="divide-y divide-slate-700/50"></tbody>
+                    <tbody id="tabel-list-lukisan">
+                        </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script>
-    // ======= TEMPEL KUNCI LU DI SINI Cs! =======
-    const SUPABASE_URL = "https://wnlbsvykmxgeoxddmpus.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_14Keu0yX40rrR2CfD9neog_noP4c6kI"; // Pastikan token anon panjang lu di sini
-    
-    const dbCloud = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const dbCloud = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
-    const form = document.getElementById("form-cms");
-    const inputHarga = document.getElementById("input-harga") || document.getElementById("harga");
-    const tabelKoleksi = document.getElementById("tabel-koleksi");
+        function formatRupiah(angka) {
+            return 'Rp ' + parseFloat(angka).toLocaleString('id-ID');
+        }
 
-    // Separator Harga Otomatis
-    if (inputHarga) {
-        inputHarga.addEventListener("input", function () {
-            let nilai = this.value.replace(/[^0-9]/g, "");
-            this.value = nilai ? new Intl.NumberFormat("id-ID").format(nilai) : "";
+        async function muatDataAdmin() {
+            // Load Config
+            let { data: config } = await dbCloud.from('konfigurasi_web').select('*').eq('id', 1).single();
+            if (config) {
+                document.getElementById("theme-logo").value = config.logo_url || "";
+                document.getElementById("theme-nama").value = config.nama_galeri || "";
+                document.getElementById("theme-deskripsi-hero").value = config.deskripsi_hero || "";
+                document.getElementById("theme-bg-utama").value = config.warna_bg_utama || "#0f172a";
+                document.getElementById("theme-bg-komponen").value = config.warna_bg_komponen || "#1e293b";
+                document.getElementById("theme-aksen").value = config.warna_aksen || "#f59e0b";
+                document.getElementById("theme-teks").value = config.warna_teks_utama || "#ffffff";
+            }
+
+            // Load List Tabel Lukisan
+            let { data: list } = await dbCloud.from('lukisan').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById("tabel-list-lukisan");
+            tbody.innerHTML = "";
+
+            if(list) {
+                list.forEach(item => {
+                    tbody.insertAdjacentHTML('beforeend', `
+                        <tr class="border-b border-slate-800 hover:bg-slate-950/50 transition-colors">
+                            <td class="p-4"><img src="${item.media}" class="w-12 h-12 object-cover rounded-lg border border-slate-700"></td>
+                            <td class="p-4 font-bold text-white">${item.judul}</td>
+                            <td class="p-4"><span class="bg-slate-800 px-2 py-1 rounded text-xs text-slate-300">${item.kategori || '-'}</span></td>
+                            <td class="p-4 font-mono text-xs">${item.ukuran}</td>
+                            <td class="p-4 font-mono font-bold text-amber-400">${formatRupiah(item.harga)}</td>
+                            <td class="p-4"><span class="text-xs px-2 py-0.5 rounded ${item.status === 'Tersedia' ? 'bg-emerald-500/10 text-emerald-400':'bg-red-500/10 text-red-400'}">${item.status}</span></td>
+                            <td class="p-4"><button onclick="hapusKarya(${item.id})" class="text-xs bg-red-500/10 border border-red-500/20 hover:bg-red-500 hover:text-white px-2 py-1 rounded text-red-400 transition-all cursor-pointer">Hapus</button></td>
+                        </tr>
+                    `);
+                });
+            }
+        }
+
+        async function hapusKarya(id) {
+            if(confirm("Yakin ingin menghapus lukisan ini secara permanen dari cloud?")) {
+                const { error } = await dbCloud.from('lukisan').delete().eq('id', id);
+                if(error) alert(error.message);
+                else { alert("Aset berhasil dihapus!"); muatDataAdmin(); }
+            }
+        }
+
+        document.getElementById("form-cms").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById("btn-submit-karya");
+            btnSubmit.innerText = "UPLOADING..."; btnSubmit.disabled = true;
+
+            const judul = document.getElementById("input-judul").value;
+            const harga = document.getElementById("input-harga").value;
+            const kategori = document.getElementById("input-kategori").value;
+            const ukuran = document.getElementById("input-ukuran").value;
+            const status = document.getElementById("input-status").value;
+            const gradient = document.getElementById("input-gradient").value;
+            const deskripsi = document.getElementById("input-deskripsi").value;
+            const isFeatured = document.getElementById("input-featured").checked;
+            const isArchive = document.getElementById("input-archive").checked;
+            const fileFoto = document.getElementById("input-file-foto").files[0];
+
+            try {
+                const fileExt = fileFoto.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                
+                let { error: uploadError } = await dbCloud.storage.from('foto-lukisan').upload(fileName, fileFoto);
+                if (uploadError) throw uploadError;
+
+                const { data: publicUrlData } = dbCloud.storage.from('foto-lukisan').getPublicUrl(fileName);
+                const fotoUrl = publicUrlData.publicUrl;
+
+                const { error: insertError } = await dbCloud.from('lukisan').insert([{ 
+                    judul, harga: parseFloat(harga), kategori, ukuran, status, gradient, deskripsi, media: fotoUrl, is_featured: isFeatured, is_archive: isArchive 
+                }]);
+
+                if (insertError) throw insertError;
+                alert("Aset Lukisan berhasil direkam secara sistemis!");
+                document.getElementById("form-cms").reset();
+                muatDataAdmin();
+            } catch (err) {
+                alert("Gagal: " + err.message);
+            } finally {
+                btnSubmit.innerText = "Eksekusi Masuk Database Cloud"; btnSubmit.disabled = false;
+            }
         });
-    }
 
-    // 1. SELECT DATA LUKISAN
-    async function muatTabelManajemen() {
-        if (!tabelKoleksi) return;
-        tabelKoleksi.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">Menghubungkan ke database cloud...</td></tr>`;
-        
-        let { data: databaseLukisan, error } = await dbCloud
-            .from('lukisan')
-            .select('*')
-            .order('id', { ascending: false });
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        if (!databaseLukisan || databaseLukisan.length === 0) {
-            tabelKoleksi.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-slate-500 italic">Tabel database PostgreSQL kosong.</td></tr>`;
-            return;
-        }
-
-        let listBaris = "";
-        databaseLukisan.forEach((lukisan) => {
-            let hargaFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(lukisan.harga);
-            
-            listBaris += `
-                <tr class="hover:bg-slate-750/50 transition-colors">
-                    <td class="py-4 px-4 flex items-center gap-3">
-                        <img src="${lukisan.gambar || 'https://placehold.co/50'}" class="w-10 h-10 object-cover rounded-lg bg-slate-700">
-                        <div>
-                            <div class="font-bold text-white">${lukisan.judul}</div>
-                            <div class="text-xs text-slate-400 mt-0.5">${lukisan.ukuran} | ${lukisan.media}</div>
-                        </div>
-                    </td>
-                    <td class="py-4 px-4 text-slate-300">${hargaFormatted}</td>
-                    <td class="py-4 px-4">
-                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">
-                            ${lukisan.status}
-                        </span>
-                    </td>
-                    <td class="py-4 px-4 text-center">
-                        <div class="flex justify-center gap-2">
-                            <button onclick="toggleStatus(${lukisan.id}, '${lukisan.status}')" class="text-xs bg-slate-700 hover:bg-amber-500 hover:text-slate-900 font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer">🔄 Status</button>
-                            <button onclick="hapusLukisan(${lukisan.id}, '${lukisan.judul}')" class="text-xs bg-red-950 text-red-400 hover:bg-red-500 hover:text-white font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer">🗑️ Hapus</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+        document.getElementById("btn-simpan-tema").addEventListener("click", async () => {
+            const { error } = await dbCloud.from('konfigurasi_web').upsert({ 
+                id: 1, logo_url: document.getElementById("theme-logo").value, nama_galeri: document.getElementById("theme-nama").value,
+                deskripsi_hero: document.getElementById("theme-deskripsi-hero").value, warna_bg_utama: document.getElementById("theme-bg-utama").value,
+                warna_bg_komponen: document.getElementById("theme-bg-komponen").value, warna_aksen: document.getElementById("theme-aksen").value,
+                warna_teks_utama: document.getElementById("theme-teks").value, updated_at: new Date()
+            });
+            if (error) alert(error.message); else alert("Tema berhasil di-deploy!");
         });
-        tabelKoleksi.innerHTML = listBaris;
-    }
 
-    // 2. INSERT DATA DENGAN PROSES UPLOAD FILE GAMBAR KE STORAGE CLOUD
-    form.addEventListener("submit", async function(e) {
-        e.preventDefault(); 
-
-        const hargaMurni = parseInt(inputHarga.value.replace(/\./g, ""));
-        if (isNaN(hargaMurni)) { return alert("Format harga salah!"); }
-
-        const fileGambar = document.getElementById("input-gambar").files[0];
-        if (!fileGambar) { return alert("Pilih foto lukisannya dulu, bray!"); }
-
-        // Alert info awal biar admin tau proses sedang berjalan
-        const tombolSubmit = form.querySelector("button[type='submit']");
-        tombolSubmit.innerText = "Sedang Mengupload Foto...";
-        tombolSubmit.disabled = true;
-
-        // Bikin nama file unik pake timestamp biar gak bentrok di cloud storage
-        const namaFileUnik = `${Date.now()}_${fileGambar.name.replace(/\s/g, '_')}`;
-
-        // Langkah A: Upload file ke Supabase Storage Bucket 'foto-lukisan'
-        let { data: uploadData, error: uploadError } = await dbCloud
-            .storage
-            .from('foto-lukisan')
-            .upload(namaFileUnik, fileGambar);
-
-        if (uploadError) {
-            tombolSubmit.innerText = "Simpan & Kirim ke PostgreSQL Cloud";
-            tombolSubmit.disabled = false;
-            return alert("Gagal upload foto ke cloud storage: " + uploadError.message);
-        }
-
-        // Langkah B: Dapatkan URL publik dari gambar yang baru diupload
-        const { data: URLPublic } = dbCloud
-            .storage
-            .from('foto-lukisan')
-            .getPublicUrl(namaFileUnik);
-
-        const urlGambarAsli = URLPublic.publicUrl;
-
-        // Langkah C: Simpan data teks + URL Gambar ke Tabel SQL `lukisan`
-        const { error: insertError } = await dbCloud
-            .from('lukisan')
-            .insert([
-                {
-                    judul: document.getElementById("input-judul").value,
-                    harga: hargaMurni,
-                    ukuran: document.getElementById("input-ukuran").value,
-                    media: document.getElementById("input-media").value,
-                    status: document.getElementById("input-status").value,
-                    deskripsi: document.getElementById("input-deskripsi").value,
-                    gambar: urlGambarAsli, // URL Foto masuk ke kolom SQL
-                    gradient: "from-slate-800 to-slate-900" // Sebagai cadangan saja
-                }
-            ]);
-
-        tombolSubmit.innerText = "Simpan & Kirim ke PostgreSQL Cloud";
-        tombolSubmit.disabled = false;
-
-        if (insertError) {
-            alert("Gagal simpan data SQL: " + insertError.message);
-        } else {
-            alert("Sukses Besar! Foto terupload & data lukisan mendarat di database cloud.");
-            form.reset();
-            muatTabelManajemen();
-        }
-    });
-
-    // 3. UPDATE STATUS
-    async function toggleStatus(idLukisan, statusSekarang) {
-        const statusBaru = statusSekarang === "Tersedia" ? "Terjual" : "Tersedia";
-        await dbCloud.from('lukisan').update({ status: statusBaru }).eq('id', idLukisan);
-        muatTabelManajemen();
-    }
-
-    // 4. DELETE DATA
-    async function hapusLukisan(idLukisan, judulLukisan) {
-        if (confirm(`Hapus permanen "${judulLukisan}" dari server cloud?`)) {
-            await dbCloud.from('lukisan').delete().eq('id', idLukisan);
-            muatTabelManajemen();
-        }
-    }
-
-    muatTabelManajemen();
-</script>
+        window.addEventListener("DOMContentLoaded", muatDataAdmin);
+    </script>
 </body>
 </html>

@@ -1,346 +1,155 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iwan Poles Art Gallery</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
+    <title>Galeri Lukisan Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 min-h-screen text-slate-100 antialiased overflow-x-hidden">
+<body id="body-klien" class="bg-slate-950 text-slate-100 min-h-screen transition-all duration-500">
 
-    <nav class="fixed top-0 left-0 w-full z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
-        <div class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
-            <a href="#" class="text-xl font-bold tracking-wider text-white">
-                IWAN<span class="text-amber-500 font-light">POLES</span>
-            </a>
-            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
-                <a href="#" class="text-amber-500 transition-colors">Beranda</a>
-                <a href="#" class="text-slate-400 hover:text-white transition-colors">Koleksi</a>
-                <a href="#" class="text-slate-400 hover:text-white transition-colors">Tentang</a>
-                <a href="#" class="text-slate-400 hover:text-white transition-colors">Kontak</a>
+    <header class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-white/5">
+        <div class="flex items-center gap-4">
+            <img id="client-logo" src="https://placehold.co/100" alt="Logo Galeri" class="h-12 w-auto object-contain rounded-lg">
+            <div>
+                <h1 id="client-nama-galeri" class="text-2xl font-black tracking-tight text-white uppercase">Loading Galeri...</h1>
+                <p id="client-deskripsi-hero" class="text-xs text-slate-400 max-w-md">Memuat narasi kurasi seni...</p>
             </div>
-            <button class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-amber-500/10">
-                Hubungi Kami
-            </button>
         </div>
-    </nav>
-
-    <header class="w-full min-h-screen flex items-center justify-center pt-20 px-6 relative overflow-hidden bg-radial from-slate-900 via-slate-950 to-slate-950">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(245,158,11,0.08),transparent_50%)]"></div>
-        <div class="max-w-4xl text-center z-10 space-y-8">
-            <span class="text-xs font-semibold tracking-widest text-amber-500 uppercase bg-amber-500/10 px-4 py-1.5 rounded-full">
-                Eksklusif & Autentik
-            </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
-                Goresan Jiwa di Atas Kanvas Modern
-            </h1>
-            <p class="text-slate-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
-                Hadirkan kemewahan rasa dan makna mendalam di ruang Anda melalui koleksi lukisan abstrak kontemporer terbaik karya Iwan Poles.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
-                <button class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-8 py-4 rounded-xl transition-all shadow-xl shadow-amber-500/20">
-                    Jelajahi Galeri
-                </button>
-                <button class="w-full sm:w-auto border border-slate-700 hover:border-slate-500 text-white font-semibold px-8 py-4 rounded-xl transition-all">
-                    Lihat Video Studio
-                </button>
-            </div>
+        
+        <div class="w-full md:w-auto">
+            <input type="text" id="search-katalog" oninput="filterSemuaKonten()" placeholder="Cari judul lukisan..." class="w-full md:w-64 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
         </div>
     </header>
 
-
-    <main class="w-full max-w-6xl mx-auto px-6 py-16">
-    <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-white mb-2">Koleksi Lukisan Terbaru</h2>
-        <div class="h-1 w-20 bg-amber-500 mx-auto rounded-full"></div>
-        <p class="text-slate-400 mt-4">Pilih dan bawa pulang karya yang paling berbicara dengan jiwa Anda.</p>
-        <!-- MENU FILTER KATEGORI -->
-        <div class="flex justify-center items-center gap-3 mt-8 mb-12">
-            <button data-filter="Semua" class="btn-filter bg-amber-500 text-slate-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md cursor-pointer">
-                Semua Karya
-            </button>
-            <button data-filter="Tersedia" class="btn-filter bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-5 py-2.5 rounded-xl text-sm transition-all cursor-pointer">
-                🟢 Tersedia
-            </button>
-            <button data-filter="Terjual" class="btn-filter bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-5 py-2.5 rounded-xl text-sm transition-all cursor-pointer">
-                🔴 Terjual
-            </button>
-        </div>
+    <div class="max-w-7xl mx-auto px-6 pt-6 flex flex-wrap gap-2 text-xs">
+        <button onclick="gantiKategoriFilter('Semua')" class="filter-btn px-4 py-2 bg-amber-500 text-slate-950 font-bold rounded-full transition-all">Semua</button>
+        <button onclick="gantiKategoriFilter('Abstrak')" class="filter-btn px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">Abstrak</button>
+        <button onclick="gantiKategoriFilter('Realisme')" class="filter-btn px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">Realisme</button>
+        <button onclick="gantiKategoriFilter('Lanskap')" class="filter-btn px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">Lanskap</button>
     </div>
 
-    <div id="katalog-lukisan" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-12">
+        <section id="seksi-featured" class="space-y-6">
+            <div class="flex items-center gap-3">
+                <span class="h-2 w-2 bg-amber-500 rounded-full animate-ping"></span>
+                <h2 class="text-lg font-bold uppercase tracking-widest text-amber-500">Koleksi Mahakarya Unggulan</h2>
+            </div>
+            <div id="grid-featured" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </section>
+
+        <section class="space-y-6 pt-6 border-t border-white/5">
+            <h2 class="text-lg font-bold uppercase tracking-widest text-slate-400">Arsip Eksplorasi Katalog Komplit</h2>
+            <div id="grid-archive" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </section>
     </main>
-    
 
-    <section class="w-full bg-slate-950 py-16 border-t border-slate-800">
-        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
-            <div class="flex-1 flex justify-center">
-                <div class="w-64 h-64 rounded-full overflow-hidden border-4 border-amber-500 shadow-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center text-slate-900 font-black text-6xl">
-                    IP
-                </div>
-            </div>
-            <div class="flex-1 text-center md:text-left">
-                <h2 class="text-3xl font-bold text-white mb-4">Di Balik Polesan Kuas</h2>
-                <p class="text-slate-400 leading-relaxed mb-6">
-                    Berawal dari coretan dinding di sudut kota, saya mendedikasikan hidup untuk mengeksplorasi emosi manusia di atas kanvas. Setiap karya di <span class="text-amber-500 font-semibold">Iwan Poles Art</span> adalah hasil perenungan mendalam, kombinasi teknik poles tekstur tebal, dan pemilihan warna yang berani.
-                </p>
-            </div>
-        </div>
-    </section>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        const dbCloud = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+        let masterDataLukisan = [];
+        let kategoriAktif = "Semua";
 
-    <footer class="w-full bg-slate-950 py-8 border-t border-slate-900 text-center">
-        <p class="text-sm text-slate-500">
-            &copy; 2026 <span class="text-amber-500 font-medium">Iwan Poles Art Gallery</span>. All Rights Reserved.
-        </p>
-    </footer>
-
-    <div id="modal-detail" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
-            
-            <button id="tombol-tutup" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
-            <!-- PASANG BARIS INI DI DALAM MODAL DETAIL LU CS, BIAR GAMBARNYA MUNCUL DI SINI -->
-            <div id="modal-foto-container"></div>
-            <h3 id="modal-judul" class="text-2xl font-bold text-white mb-2">Detail Karya</h3>
-            <div class="h-0.5 w-12 bg-amber-500 mb-4"></div>
-            
-            <table class="w-full text-left text-slate-300 text-sm border-collapse">
-                <tr class="border-b border-slate-700/50"><td class="py-2 font-medium text-slate-400">Media</td><td class="py-2" id="modal-media">Cat Minyak</td></tr>
-                <tr class="border-b border-slate-700/50"><td class="py-2 font-medium text-slate-400">Ukuran</td><td class="py-2" id="modal-ukuran">100 x 120 cm</td></tr>
-                <tr class="border-b border-slate-700/50"><td class="py-2 font-medium text-slate-400">Tahun</td><td class="py-2">2026</td></tr>
-                <tr><td class="py-2 font-medium text-slate-400">Teknik</td><td class="py-2">Polesan Pisau Palet</td></tr>
-            </table>
-            
-            <!-- Bagian Bawah Modal (Tempat Tombol) -->
-            <div class="flex flex-col sm:flex-row gap-3 mt-8 pt-4 border-t border-slate-700">
-                <!-- TOMBOL WHATSAPP (Kita pakai tag <a> agar bisa nge-link ke WA) -->
-                <a id="tombol-wa" target="_blank" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold text-center py-3 rounded-xl transition-all cursor-pointer">
-                    💬 Tanya via WhatsApp
-                </a>
-                
-                <!-- Tombol Tutup Modal yang sudah ada -->
-                <button id="tombol-tutup" class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-3 px-6 rounded-xl transition-all cursor-pointer">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-    // ======= TEMPEL KUNCI CLOUD LU DI SINI Cs! =======
-    const SUPABASE_URL = "https://wnlbsvykmxgeoxddmpus.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_14Keu0yX40rrR2CfD9neog_noP4c6kI"; // Pastikan token anon panjang lu di sini
-    const dbCloud = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const modal = document.getElementById("modal-detail");
-    const tombolTutup = document.querySelectorAll("#tombol-tutup");
-    const modalJudul = document.getElementById("modal-judul");
-    const modalUkuran = document.getElementById("modal-ukuran");
-    const modalMedia = document.getElementById("modal-media");
-    const katalog = document.getElementById("katalog-lukisan");
-
-    let masterDataLukisan = [];
-
-    // 0. Fungsi Separator IDR untuk Tampilan Harga Kartu
-    function formatRupiah(angka) {
-        let angkaPolos = String(angka).replace(/[^0-9]/g, '');
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(angkaPolos);
-    }
-
-    // 1. FUNGSI UTAMA AMBIL DATA DARI CLOUD
-    async function muatKatalog(){
-        katalog.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Memuat karya indah dari server cloud...</div>`;
-        
-        let { data: databaseCloud, error } = await dbCloud
-            .from('lukisan')
-            .select('*')
-            .order('id', { ascending: false });
-
-        if (error) {
-            console.error("Gagal mengambil data:", error);
-            katalog.innerHTML = `<div class="col-span-full text-center py-12 text-red-400">Gagal memuat katalog: ${error.message}</div>`;
-            return;
+        function formatRupiah(angka) {
+            return 'Rp ' + parseFloat(angka).toLocaleString('id-ID');
         }
 
-        masterDataLukisan = databaseCloud || [];
-        gambarKartuKatalog(masterDataLukisan);
-        aktifkanFiturFilter();
-    }
+        async function initAplikasiKlien() {
+            try {
+                let { data: config } = await dbCloud.from('konfigurasi_web').select('*').eq('id', 1).single();
+                if (config) {
+                    document.getElementById("client-logo").src = config.logo_url || "https://placehold.co/100";
+                    document.getElementById("client-nama-galeri").innerText = config.nama_galeri || "GALERI SENI";
+                    document.getElementById("client-deskripsi-hero").innerText = config.deskripsi_hero || "";
+                    document.getElementById("body-klien").style.backgroundColor = config.warna_bg_utama;
+                }
 
-    // 2. FUNGSI UNTUK MENGGAMBAR KARTU KATALOG
-    function gambarKartuKatalog(dataLukisan) {
-        let listKartu = "";
-
-        if (!dataLukisan || dataLukisan.length === 0) {
-            katalog.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 italic">Tidak ada lukisan dalam kategori ini.</div>`;
-            return;
+                let { data: dataDb } = await dbCloud.from('lukisan').select('*').order('created_at', { ascending: false });
+                masterDataLukisan = dataDb || [];
+                filterSemuaKonten();
+            } catch (err) { console.error(err.message); }
         }
 
-        dataLukisan.forEach((lukisan) => {
-            if (!lukisan || !lukisan.judul) return; 
+        function gantiKategoriFilter(kat) {
+            kategoriAktif = kat;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-slate-950', 'font-bold');
+                btn.classList.add('bg-white/5', 'border', 'border-white/10', 'text-slate-100');
+                if(btn.innerText === kat) {
+                    btn.classList.add('bg-amber-500', 'text-slate-950', 'font-bold');
+                    btn.classList.remove('bg-white/5', 'border', 'border-white/10', 'text-slate-100');
+                }
+            });
+            filterSemuaKonten();
+        }
 
-            const urlGambar = lukisan.gambar ? lukisan.gambar : 'https://placehold.co/600x400?text=Iwan+Poles+Art';
-            const hargaMurni = lukisan.harga ? lukisan.harga : 0;
+        function filterSemuaKonten() {
+            const kataKunci = document.getElementById("search-katalog").value.toLowerCase();
+            const wadahFeatured = document.getElementById("grid-featured");
+            const wadahArchive = document.getElementById("grid-archive");
+            
+            wadahFeatured.innerHTML = "";
+            wadahArchive.innerHTML = "";
 
-            let tombolHTML = "";
-            if (lukisan.status === "Tersedia") {
-                tombolHTML = `<button class="tombol-detail bg-slate-700 hover:bg-amber-500 hover:text-slate-900 text-white font-medium text-sm px-4 py-2 rounded-xl transition-all cursor-pointer"
-                                data-judul="${lukisan.judul}" data-ukuran="${lukisan.ukuran || 'Ukuran Khusus'}" data-media="${lukisan.media || 'Kanvas'}" data-gambar="${urlGambar}">
-                                Detail
-                              </button>`;
-            } else {
-                tombolHTML = `<button disabled class="bg-slate-800 text-slate-600 font-medium text-sm px-4 py-2 rounded-xl cursor-not-allowed border border-slate-700">
-                                Sold Out
-                              </button>`;
-            }
+            masterDataLukisan.forEach(lukisan => {
+                const cocokKategori = (kategoriAktif === "Semua" || lukisan.kategori === kategoriAktif);
+                const cocokSearch = lukisan.judul.toLowerCase().includes(kataKunci);
 
-            listKartu += `
-                <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg group hover:-translate-y-2 transition-all duration-300">
-                    <div class="w-full h-64 overflow-hidden bg-slate-950 flex items-center justify-center relative">
-                        <img src="${urlGambar}" 
-                             alt="${lukisan.judul}" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                             onerror="this.src='https://placehold.co/600x400?text=Gambar+Gagal+Dimuat'">
-                    </div>
-                    <div class="p-6">
-                        <span class="text-xs font-semibold ${lukisan.status === 'Terjual' ? 'text-red-500 bg-red-500/10' : 'text-amber-500 bg-amber-500/10'} px-3 py-1 rounded-full">
-                            ${lukisan.status || 'Tersedia'}
-                        </span>
-                        <h3 class="text-xl font-bold text-white mt-3">${lukisan.judul}</h3>
-                        <p class="text-slate-400 text-sm mt-2 line-clamp-2">${lukisan.deskripsi || 'Tidak ada deskripsi.'}</p>
-                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
-                            <span class="text-lg font-bold ${lukisan.status === 'Tersedia' ? 'text-emerald-400' : 'text-slate-500 line-through'}">${formatRupiah(hargaMurni)}</span>
-                            ${tombolHTML}
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
+                if (cocokKategori && cocokSearch) {
+                    const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
+                    
+                    // BARU: LINK WHATSAPP FITUR YANG SEBELUMNYA HILANG
+                    const nomorWA = "6281234567890"; // Ganti dengan nomor WA lu cs
+                    const teksWA = encodeURIComponent(`Halo, saya tertarik dengan lukisan "${lukisan.judul}" seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`);
+                    const linkOrderWA = `https://wa.me/${nomorWA}?text=${teksWA}`;
 
-        katalog.innerHTML = listKartu;
-        aktifkanTombolDetail();
-    }
-
-    // 3. FUNGSI UTAMA DETAIL, WA, & KINEMATIC HOVER ZOOM MURNI CSS/JS
-    function aktifkanTombolDetail() {
-        const semuaTombol = document.querySelectorAll(".tombol-detail");
-        const tombolWa = document.getElementById("tombol-wa"); 
-        const nomorHp = "6285896246975"; 
-
-        semuaTombol.forEach(tombol => {
-            tombol.addEventListener("click", function() {
-                const judul = this.getAttribute("data-judul");
-                const ukuran = this.getAttribute("data-ukuran");
-                const media  = this.getAttribute("data-media");
-                const linkFoto = this.getAttribute("data-gambar");
-                const harga = this.closest('.p-6').querySelector('.text-lg').innerText;
-
-                modalJudul.innerText = judul;
-                modalUkuran.innerText = ukuran; 
-                modalMedia.innerText = media;
-
-                // --- INJEKSI CONTAINER ZOOM PREMIUM ---
-                let wadahFotoModal = document.getElementById("modal-foto-container");
-                if (wadahFotoModal) {
-                    wadahFotoModal.innerHTML = `
-                        <div id="pan-zoom-frame" class="relative w-full h-64 md:h-80 bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center border border-slate-700 mb-4 cursor-zoom-in group/frame">
-                            <img id="foto-mahakarya" src="${linkFoto}" class="w-full h-full object-contain pointer-events-none transition-transform duration-200 ease-out origin-center" style="transform: scale(1);">
-                            <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur text-[10px] text-slate-400 px-2 py-1 rounded border border-slate-700 tracking-wide uppercase pointer-events-none group-hover/frame:opacity-0 transition-opacity">
-                                💡 Gerakkan Kursor Untuk Zoom
+                    const htmlKartu = `
+                        <div class="group bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden hover:border-amber-500/30 transition-all duration-300 relative flex flex-col justify-between">
+                            <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-amber-500/10 to-transparent'} opacity-40 pointer-events-none"></div>
+                            <div>
+                                <div class="relative overflow-hidden aspect-[4/3] bg-black/40">
+                                    <img src="${urlGambarAset}" alt="${lukisan.judul}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500">
+                                    <span class="absolute top-3 right-3 text-[10px] uppercase font-mono font-bold px-2 py-1 rounded border ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}">
+                                        ${lukisan.status}
+                                    </span>
+                                </div>
+                                <div class="p-5 space-y-2 relative z-10">
+                                    <div class="flex justify-between items-start gap-2">
+                                        <h3 class="font-bold text-white text-base group-hover:text-amber-400 transition-colors">${lukisan.judul}</h3>
+                                        <span class="text-[10px] text-slate-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">${lukisan.kategori || 'Seni'}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 line-clamp-2 font-light">${lukisan.deskripsi || 'Tidak ada deskripsi.'}</p>
+                                </div>
+                            </div>
+                            <div class="p-5 pt-0 mt-4 space-y-3 relative z-10">
+                                <div class="border-t border-white/5 pt-3 flex justify-between items-center bg-slate-900/40">
+                                    <div>
+                                        <span class="block text-[10px] uppercase tracking-wider text-slate-500">Dimensi</span>
+                                        <span class="text-xs text-slate-300 font-mono">${lukisan.ukuran}</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="block text-[10px] uppercase tracking-wider text-amber-500/70">Harga</span>
+                                        <span class="text-sm font-black text-white font-mono">${formatRupiah(lukisan.harga)}</span>
+                                    </div>
+                                </div>
+                                <a href="${linkOrderWA}" target="_blank" class="block w-full text-center bg-white/5 hover:bg-amber-500 hover:text-slate-950 border border-white/10 text-xs font-bold py-2 rounded-xl transition-all uppercase tracking-wider">
+                                    Hubungi Kolektor (Order)
+                                </a>
                             </div>
                         </div>
                     `;
 
-                    const frame = document.getElementById("pan-zoom-frame");
-                    const img = document.getElementById("foto-mahakarya");
-
-                    // A. Efek Gerakan Kursor Mouse (Desktop)
-                    frame.addEventListener("mousemove", (e) => {
-                        const r = frame.getBoundingClientRect();
-                        const x = ((e.clientX - r.left) / r.width) * 100;
-                        const y = ((e.clientY - r.top) / r.height) * 100;
-                        
-                        img.style.transformOrigin = `${x}% ${y}%`;
-                        img.style.transform = "scale(2.2)"; // Tingkat kedalaman zoom (2.2x)
-                    });
-
-                    // B. Kursor Keluar Frame (Reset Balik Normal)
-                    frame.addEventListener("mouseleave", () => {
-                        img.style.transformOrigin = "center center";
-                        img.style.transform = "scale(1)";
-                    });
-
-                    // C. Klik / Double Click to Extra Zoom Toggle
-                    let isExtraZoom = false;
-                    frame.addEventListener("click", () => {
-                        isExtraZoom = !isExtraZoom;
-                        if(isExtraZoom) {
-                            frame.classList.remove("cursor-zoom-in");
-                            frame.classList.add("cursor-zoom-out");
-                            img.style.transform = "scale(3)";
-                        } else {
-                            frame.classList.remove("cursor-zoom-out");
-                            frame.classList.add("cursor-zoom-in");
-                            img.style.transform = "scale(1)";
-                        }
-                    });
-                }
-                // --------------------------------------
-
-                const teksPesan = `Halo Kang Iwan Poles, saya tertarik dengan karya lukisan anda:\n\n*Judul:* ${judul}\n*Ukuran:* ${ukuran}\n*Media:* ${media}\n*Harga:* ${harga}\n\nApakah lukisan ini masih tersedia?`;
-                const teksAmanURL = encodeURIComponent(teksPesan);
-                tombolWa.href = `https://api.whatsapp.com/send?phone=${nomorHp}&text=${teksAmanURL}`;
-
-                modal.classList.remove("hidden");
-            });
-        });
-    }
-
-    // 4. LOGIKA FILTER KATEGORI
-    function aktifkanFiturFilter() {
-        const tombolFilter = document.querySelectorAll(".btn-filter");
-        tombolFilter.forEach(tombol => {
-            tombol.addEventListener("click", function() {
-                const kategori = this.getAttribute("data-filter");
-
-                tombolFilter.forEach(btn => {
-                    btn.classList.remove("bg-amber-500", "text-slate-900", "font-bold");
-                    btn.classList.add("bg-slate-800", "text-slate-300", "font-semibold");
-                });
-                this.classList.remove("bg-slate-800", "text-slate-300", "font-semibold");
-                this.classList.add("bg-amber-500", "text-slate-900", "font-bold");
-
-                if (kategori === "Semua") {
-                    gambarKartuKatalog(masterDataLukisan);
-                } else {
-                    const dataHasilFilter = masterDataLukisan.filter(lukisan => lukisan.status === kategori);
-                    gambarKartuKatalog(dataHasilFilter);
+                    if (lukisan.is_featured === true) wadahFeatured.insertAdjacentHTML('beforeend', htmlKartu);
+                    if (lukisan.is_archive === true) wadahArchive.insertAdjacentHTML('beforeend', htmlKartu);
                 }
             });
-        });
-    }
 
-    // 5. LOGIKA TUTUP MODAL
-    tombolTutup.forEach(tombol => {
-        tombol.addEventListener("click", () => modal.classList.add("hidden"));
-    });
+            // Sembunyikan heading featured kalau pencarian sedang aktif agar layout rapi
+            document.getElementById("seksi-featured").style.display = kataKunci !== "" ? "none" : "block";
+        }
 
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) modal.classList.add("hidden");
-    });
-
-    muatKatalog();
-</script>
+        window.addEventListener("DOMContentLoaded", initAplikasiKlien);
+    </script>
 </body>
 </html>
