@@ -5,44 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeri Lukisan Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body id="body-klien" class="bg-slate-950 text-slate-100 min-h-screen transition-all duration-500">
-
-    <header class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-white/5">
-        <div class="flex items-center gap-4">
-            <img id="client-logo" src="https://placehold.co/100" alt="Logo Galeri" class="h-12 w-auto object-contain rounded-lg">
-            <div>
-                <h1 id="client-nama-galeri" class="text-2xl font-black tracking-tight text-white uppercase">Loading Galeri...</h1>
-                <p id="client-deskripsi-hero" class="text-xs text-slate-400 max-w-md">Memuat narasi kurasi seni...</p>
-            </div>
-        </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         
-        <div class="w-full md:w-auto">
-            <input type="text" id="search-katalog" oninput="filterSemuaKonten()" placeholder="Cari judul lukisan..." class="w-full md:w-64 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+        /* --- ANIMASI CAROUSEL INTERAKTIF DENGAN KEYFRAMES (PASTI GERAK) --- */
+        .slide-fade { 
+            display: none; 
+            opacity: 0; 
+            width: 100%;
+            height: 100%;
+        }
+        .slide-fade.active { 
+            display: block; 
+            animation: fadeInSlide 0.8s ease-out forwards;
+        }
+        
+        /* Efek Ken Burns Zoom Berjalan Otomatis Begitu Slide Aktif */
+        .slide-fade.active img {
+            animation: kenBurnsEffect 7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* Efek Slide-Up Teks Deskripsi Menyusul Halus */
+        .carousel-card-animasi {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .slide-fade.active .carousel-card-animasi {
+            animation: slideUpTeks 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.2s; /* Efek staggered muncul belakangan sedikit */
+        }
+
+        /* Deklarasi Gerakan Animasi */
+        @keyframes fadeInSlide {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes kenBurnsEffect {
+            from { transform: scale(1.00); }
+            to { transform: scale(1.10); }
+        }
+        @keyframes slideUpTeks {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        /* ------------------------------------------------------------------ */
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .theme-transisi { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body id="body-klien" class="bg-slate-950 text-slate-100 min-h-screen transition-all duration-500 antialiased selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- HEADER / NAVIGATION -->
+    <header id="header-nav" class="border-b border-white/5 backdrop-blur-xl sticky top-0 z-50 bg-slate-950/70 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <img id="client-logo" src="https://placehold.co/100" alt="Logo Galeri" class="h-12 w-12 object-cover rounded-2xl border border-white/10 shadow-lg shadow-black/20">
+                <div>
+                    <h1 id="client-nama-galeri" class="text-lg font-black tracking-widest text-white uppercase sm:text-xl text-dinamis-teks">Loading Galeri...</h1>
+                    <p id="client-deskripsi-hero" class="text-[11px] text-slate-400 max-w-xs line-clamp-1 font-light tracking-wide">Memuat narasi kurasi seni...</p>
+                </div>
+            </div>
+            
+            <nav id="nav-container" class="flex gap-1 bg-slate-900/40 p-1 border border-white/5 backdrop-blur-md rounded-2xl text-xs w-full md:w-auto justify-center theme-transisi">
+                <button onclick="navigasiMenu('home', 'seksi-top')" id="btn-menu-home" class="menu-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Unggulan</button>
+                <button onclick="navigasiMenu('katalog', '')" id="btn-menu-katalog" class="menu-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Katalog Kategori</button>
+                <button onclick="navigasiMenu('home', 'seksi-profil')" id="btn-menu-profil" class="menu-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Profil Pelukis</button>
+            </nav>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-6 pt-6 flex flex-wrap gap-2 text-xs">
-        <button onclick="gantiKategoriFilter('Semua')" class="filter-btn px-4 py-2 bg-amber-500 text-slate-950 font-bold rounded-full transition-all">Semua</button>
-        <button onclick="gantiKategoriFilter('Abstrak')" class="filter-btn px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">Abstrak</button>
-        <button onclick="gantiKategoriFilter('Realisme')" class="filter-btn px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">Realisme</button>
-        <button onclick="gantiKategoriFilter('Lanskap')" class="filter-btn px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">Lanskap</button>
+    <div id="seksi-top"></div>
+
+    <!-- TAB HOME -->
+    <div id="tab-home" class="tab-content active">
+        <!-- HERO CAROUSEL -->
+        <section id="seksi-carousel" class="w-full relative hidden overflow-hidden border-b border-white/5">
+            <div class="relative h-[450px] sm:h-[650px] w-full bg-slate-950 group/carousel">
+                <div id="carousel-wrapper" class="w-full h-full relative"></div>
+                
+                <!-- Navigasi Panah Minimalis -->
+                <button onclick="geserSlide(-1)" class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-black/20 text-white border border-white/10 flex items-center justify-center text-sm transition-all duration-300 backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 z-30 hover:scale-105 btn-panah-dinamis">❮</button>
+                <button onclick="geserSlide(1)" class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-black/20 text-white border border-white/10 flex items-center justify-center text-sm transition-all duration-300 backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 z-30 hover:scale-105 btn-panah-dinamis">❯</button>
+            </div>
+        </section>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 py-20 space-y-32">
+            
+            <!-- FEATURED SECTION -->
+            <section class="space-y-10">
+                <div class="flex items-center gap-3 border-b border-white/5 pb-4">
+                    <span class="relative flex h-2 w-2">
+                        <span id="ping-warna" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span id="dot-warna" class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    </span>
+                    <h2 id="text-header-featured" class="text-xs font-bold uppercase tracking-[0.2em] text-amber-500 text-dinamis-aksen">Koleksi Mahakarya Unggulan</h2>
+                </div>
+                <div id="grid-featured" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+                    <!-- Ditulis Otomatis dari Supabase -->
+                </div>
+            </section>
+
+            <!-- PROFIL SECTION -->
+            <section id="seksi-profil" class="border-t border-white/5 pt-24 max-w-4xl mx-auto text-center space-y-10 scroll-mt-28">
+                <div class="relative inline-block mx-auto">
+                    <div id="blur-profil" class="absolute inset-0 bg-amber-500/5 blur-3xl rounded-full scale-150"></div>
+                    <img id="profil-foto-pelukis" src="https://placehold.co/200" alt="Foto Pelukis" class="relative w-40 h-40 object-cover rounded-full mx-auto border border-white/10 p-2 bg-slate-900/50 shadow-2xl shadow-black/50 card-dinamis">
+                </div>
+                
+                <div class="space-y-3">
+                    <h2 id="profil-nama-pelukis" class="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl text-dinamis-teks">Nama Maestro Pelukis</h2>
+                    <p class="text-[10px] uppercase tracking-[0.25em] text-amber-500 font-mono font-bold text-dinamis-aksen">Curator & Master Artist</p>
+                </div>
+
+                <p id="profil-narasi" class="text-xs sm:text-sm text-slate-400 font-light leading-relaxed max-w-2xl mx-auto text-center italic px-4">
+                    "Seni adalah jembatan jiwa yang mengekspresikan apa yang tidak bisa diucapkan oleh kata-kata. Setiap goresan kuas di atas kanvas ini membawa pesan mendalam, menangkap harmoni warna, emosi manusia, serta keindahan alam yang abadi untuk dikurasi ke ruang hidup Anda."
+                </p>
+
+                <div class="pt-6 max-w-lg mx-auto grid grid-cols-3 gap-6 text-center text-xs px-4">
+                    <div class="border border-white/5 p-5 rounded-2xl card-dinamis theme-transisi shadow-sm shadow-black/10">
+                        <span class="block font-mono font-extrabold text-xl text-amber-400 text-dinamis-aksen mb-1">100+</span>
+                        <span class="text-[9px] text-slate-500 tracking-wider uppercase font-medium">Karya Seni</span>
+                    </div>
+                    <div class="border border-white/5 p-5 rounded-2xl card-dinamis theme-transisi shadow-sm shadow-black/10">
+                        <span class="block font-mono font-extrabold text-xl text-amber-400 text-dinamis-aksen mb-1">15+</span>
+                        <span class="text-[9px] text-slate-500 tracking-wider uppercase font-medium">Pameran</span>
+                    </div>
+                    <div class="border border-white/5 p-5 rounded-2xl card-dinamis theme-transisi shadow-sm shadow-black/10">
+                        <span class="block font-mono font-extrabold text-xl text-amber-400 text-dinamis-aksen mb-1">2026</span>
+                        <span class="text-[9px] text-slate-500 tracking-wider uppercase font-medium">Established</span>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-6 py-8 space-y-12">
-        <section id="seksi-featured" class="space-y-6">
-            <div class="flex items-center gap-3">
-                <span class="h-2 w-2 bg-amber-500 rounded-full animate-ping"></span>
-                <h2 class="text-lg font-bold uppercase tracking-widest text-amber-500">Koleksi Mahakarya Unggulan</h2>
+    <!-- TAB KATALOG -->
+    <div id="tab-katalog" class="tab-content max-w-7xl mx-auto px-4 sm:px-8 py-16 space-y-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/5 pb-8">
+            <div id="filter-container" class="flex flex-wrap gap-1.5 bg-slate-900/40 p-1.5 border border-white/5 rounded-2xl text-xs theme-transisi backdrop-blur-md">
+                <button id="btn-filter-Semua" onclick="gantiKategoriFilter('Semua')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Semua Karya</button>
+                <button id="btn-filter-Abstrak" onclick="gantiKategoriFilter('Abstrak')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Abstrak</button>
+                <button id="btn-filter-Realisme" onclick="gantiKategoriFilter('Realisme')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Realisme</button>
+                <button id="btn-filter-Lanskap" onclick="gantiKategoriFilter('Lanskap')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Lanskap</button>
             </div>
-            <div id="grid-featured" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </section>
+            
+            <div class="relative w-full md:w-80">
+                <input type="text" id="search-katalog" oninput="filterSemuaKonten()" placeholder="Cari karya maestro di sini..." class="w-full border rounded-xl pl-5 pr-11 py-3 text-xs text-white placeholder-slate-500 focus:outline-none transition-all duration-300 tracking-wide input-dinamis">
+                <span class="absolute right-4 top-3.5 text-slate-500 pointer-events-none text-xs">🔍</span>
+            </div>
+        </div>
 
-        <section class="space-y-6 pt-6 border-t border-white/5">
-            <h2 class="text-lg font-bold uppercase tracking-widest text-slate-400">Arsip Eksplorasi Katalog Komplit</h2>
-            <div id="grid-archive" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-        </section>
-    </main>
+        <div id="grid-archive" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <!-- Ditulis Otomatis dari Supabase -->
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <footer class="py-12 mt-20 border-t border-white/5 text-center text-[11px] text-slate-500 tracking-widest font-light uppercase">
+            <p>© 2026 Iwan Poles ART Galeri.</p>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -50,9 +184,105 @@
         const dbCloud = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
         let masterDataLukisan = [];
         let kategoriAktif = "Semua";
+        
+        let warnaBgGlobal = "#0f172a"; 
+        let warnaCardGlobal = "#1e293b";
+        let warnaAksenGlobal = "#f59e0b";
+        let warnaTeksGlobal = "#ffffff";
+        
+        let indeksSlideSaatIni = 0;
+        let intervalTimerSlide;
 
         function formatRupiah(angka) {
             return 'Rp ' + parseFloat(angka).toLocaleString('id-ID');
+        }
+
+        function aplikasikanTemaKlien(bgUtama, bgCard, aksen, teksUtama) {
+            warnaBgGlobal = bgUtama;
+            warnaCardGlobal = bgCard;
+            warnaAksenGlobal = aksen;
+            warnaTeksGlobal = teksUtama;
+
+            document.getElementById("body-klien").style.backgroundColor = bgUtama;
+            document.getElementById("body-klien").style.color = teksUtama;
+            document.querySelectorAll(".text-dinamis-teks").forEach(el => el.style.color = teksUtama);
+
+            document.getElementById("header-nav").style.backgroundColor = `${bgUtama}b3`;
+            document.getElementById("nav-container").style.backgroundColor = `${bgCard}66`;
+            document.getElementById("filter-container").style.backgroundColor = `${bgCard}66`;
+
+            document.querySelectorAll(".text-dinamis-aksen").forEach(el => el.style.color = aksen);
+            const ping = document.getElementById("ping-warna"); if(ping) ping.style.backgroundColor = aksen;
+            const dot = document.getElementById("dot-warna"); if(dot) dot.style.backgroundColor = aksen;
+            const blurProfil = document.getElementById("blur-profil"); if(blurProfil) blurProfil.style.backgroundColor = `${aksen}0d`;
+
+            const searchBox = document.getElementById("search-katalog");
+            if(searchBox) {
+                searchBox.style.backgroundColor = `${bgCard}80`;
+                searchBox.style.borderColor = "rgba(255, 255, 255, 0.05)";
+                searchBox.onfocus = () => { searchBox.style.borderColor = aksen; searchBox.style.boxShadow = `0 0 20px ${aksen}1a`; };
+                searchBox.onblur = () => { searchBox.style.borderColor = "rgba(255, 255, 255, 0.05)"; searchBox.style.boxShadow = "none"; };
+            }
+
+            document.querySelectorAll(".btn-panah-dinamis").forEach(btn => {
+                btn.style.backgroundColor = "rgba(0,0,0,0.3)";
+                btn.style.borderColor = "rgba(255,255,255,0.08)";
+                btn.onmouseenter = () => { btn.style.backgroundColor = aksen; btn.style.color = (bgUtama === "#ffffff" || aksen === "#ffffff") ? "#0f172a" : "#000000"; btn.style.borderColor = aksen; };
+                btn.onmouseleave = () => { btn.style.backgroundColor = "rgba(0,0,0,0.3)"; btn.style.color = "#ffffff"; btn.style.borderColor = "rgba(255, 255, 255, 0.08)"; };
+            });
+
+            const activeTabButton = document.querySelector('.menu-btn.active-tab');
+            if (activeTabButton) {
+                activeTabButton.style.color = aksen;
+                activeTabButton.style.backgroundColor = `${bgCard}`;
+            } else {
+                let currentTab = document.getElementById("tab-home").classList.contains("active") ? "home" : "katalog";
+                let currentAnchor = document.getElementById("seksi-profil").getBoundingClientRect().top < window.innerHeight ? "seksi-profil" : "";
+                navigasiMenu(currentTab, currentAnchor);
+            }
+
+            gantiKategoriFilter(kategoriAktif);
+        }
+
+        function navigasiMenu(tabName, targetId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.style.color = 'rgba(255, 255, 255, 0.4)';
+                btn.style.backgroundColor = 'transparent';
+                btn.style.boxShadow = 'none';
+            });
+
+            let tombolAktif;
+            if (targetId === 'seksi-profil') {
+                tombolAktif = document.getElementById('btn-menu-profil');
+            } else if (tabName === 'katalog') {
+                tombolAktif = document.getElementById('btn-menu-katalog');
+            } else {
+                tombolAktif = document.getElementById('btn-menu-home');
+            }
+
+            if (tombolAktif) {
+                tombolAktif.classList.add('active-tab');
+                tombolAktif.style.color = warnaAksenGlobal;
+                tombolAktif.style.backgroundColor = warnaCardGlobal;
+                tombolAktif.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+            }
+
+            if (tabName !== 'home') {
+                clearInterval(intervalTimerSlide);
+            } else {
+                jalankanAutoPlaySlide();
+            }
+
+            if (targetId) {
+                setTimeout(() => {
+                    const elemenTarget = document.getElementById(targetId);
+                    if (elemenTarget) elemenTarget.scrollIntoView({ behavior: 'smooth' });
+                }, 50);
+            }
         }
 
         async function initAplikasiKlien() {
@@ -62,23 +292,127 @@
                     document.getElementById("client-logo").src = config.logo_url || "https://placehold.co/100";
                     document.getElementById("client-nama-galeri").innerText = config.nama_galeri || "GALERI SENI";
                     document.getElementById("client-deskripsi-hero").innerText = config.deskripsi_hero || "";
-                    document.getElementById("body-klien").style.backgroundColor = config.warna_bg_utama;
+                    
+                    if(config.nama_galeri) document.getElementById("profil-nama-pelukis").innerText = config.nama_galeri;
+                    if(config.logo_url) document.getElementById("profil-foto-pelukis").src = config.logo_url;
+                    if(config.deskripsi_hero) document.getElementById("profil-narasi").innerText = config.deskripsi_hero;
+
+                    aplikasikanTemaKlien(
+                        config.warna_bg_utama || "#020617",
+                        config.warna_bg_komponen || "#0f172a",
+                        config.warna_aksen || "#f59e0b",
+                        config.warna_teks_utama || "#f8fafc"
+                    );
                 }
 
                 let { data: dataDb } = await dbCloud.from('lukisan').select('*').order('created_at', { ascending: false });
                 masterDataLukisan = dataDb || [];
+                
+                bangunSlideCarousel();
                 filterSemuaKonten();
             } catch (err) { console.error(err.message); }
+        }
+
+        function bangunSlideCarousel() {
+            const wadahCarousel = document.getElementById("carousel-wrapper");
+            const seksiCarousel = document.getElementById("seksi-carousel");
+            const lukisanFeatured = masterDataLukisan.filter(item => item.is_featured === true);
+
+            if (lukisanFeatured.length === 0) {
+                seksiCarousel.style.display = "none";
+                return;
+            }
+
+            wadahCarousel.innerHTML = "";
+            seksiCarousel.style.display = "block";
+
+            lukisanFeatured.forEach((lukisan, index) => {
+                const urlGambar = lukisan.media || 'https://placehold.co/1200x600?text=No+Image';
+                const nomorWA = "6281234567890"; 
+                const teksWA = encodeURIComponent(`Halo, saya melihat lukisan "${lukisan.judul}" di Slide Unggulan. Apakah unit ini tersedia?`);
+                const linkOrderWA = `https://wa.me/${nomorWA}?text=${teksWA}`;
+
+                const htmlSlide = `
+                    <div class="slide-fade w-full h-full relative ${index === 0 ? 'active' : ''}">
+                        <div class="w-full h-full relative overflow-hidden flex justify-center items-center">
+                            <img src="${urlGambar}" alt="${lukisan.judul}" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <!-- SHADOW TEPI CLEAN VIGNETTE -->
+                        <div class="absolute inset-0 z-10 pointer-events-none" style="background: radial-gradient(circle at center, transparent 85%, ${warnaBgGlobal}99 100%);"></div>
+                        <div class="absolute inset-0 z-10 pointer-events-none" style="background: linear-gradient(to top, ${warnaBgGlobal}cc 0%, ${warnaBgGlobal}33 15%, transparent 30%);"></div>
+
+                        <div class="absolute bottom-16 left-0 right-0 z-25">
+                            <div class="max-w-7xl mx-auto px-4 sm:px-8">
+                                <div class="carousel-card-animasi max-w-xl border border-white/5 backdrop-blur-xl p-8 rounded-3xl space-y-5 shadow-2xl shadow-black/80" style="background-color: ${warnaCardGlobal}66">
+                                    <div class="space-y-2">
+                                        <span class="text-[9px] uppercase tracking-[0.2em] font-extrabold px-3 py-1 rounded-full border inline-block" style="color: ${warnaAksenGlobal}; background-color: ${warnaAksenGlobal}0d; border-color: ${warnaAksenGlobal}26">Curated Masterpiece</span>
+                                        <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase">${lukisan.judul}</h2>
+                                    </div>
+                                    <p class="text-xs text-slate-400 font-light leading-relaxed line-clamp-2">${lukisan.deskripsi || 'Eksplorasi estetika seni kurasi tinggi.'}</p>
+                                    
+                                    <div class="pt-4 flex items-center justify-between gap-4 border-t border-white/5">
+                                        <div class="flex items-center gap-6">
+                                            <div>
+                                                <span class="block text-[8px] text-slate-500 uppercase tracking-widest font-semibold mb-0.5">Mahar Karya</span>
+                                                <span class="text-sm sm:text-lg font-black font-mono tracking-tight" style="color: ${warnaAksenGlobal}">${formatRupiah(lukisan.harga)}</span>
+                                            </div>
+                                            <div class="border-l border-white/10 pl-6">
+                                                <span class="block text-[8px] text-slate-500 uppercase tracking-widest font-semibold mb-0.5">Dimensi</span>
+                                                <span class="text-xs sm:text-sm text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
+                                            </div>
+                                        </div>
+                                        <a href="${linkOrderWA}" target="_blank" class="hover:scale-[1.03] active:scale-95 text-xs font-bold px-6 py-3.5 rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
+                                            Pesan Sekarang➔
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                wadahCarousel.insertAdjacentHTML('beforeend', htmlSlide);
+            });
+
+            jalankanAutoPlaySlide();
+        }
+
+        function tunjukkanSlide(index) {
+            const listSlide = document.querySelectorAll(".slide-fade");
+            if (listSlide.length === 0) return;
+
+            if (index >= listSlide.length) indeksSlideSaatIni = 0;
+            else if (index < 0) indeksSlideSaatIni = listSlide.length - 1;
+            else indeksSlideSaatIni = index;
+
+            listSlide.forEach(slide => slide.classList.remove("active"));
+            listSlide[indeksSlideSaatIni].classList.add("active");
+        }
+
+        function geserSlide(arah) {
+            clearInterval(intervalTimerSlide);
+            tunjukkanSlide(indeksSlideSaatIni + arah);
+            jalankanAutoPlaySlide();
+        }
+
+        function jalankanAutoPlaySlide() {
+            clearInterval(intervalTimerSlide);
+            intervalTimerSlide = setInterval(() => {
+                tunjukkanSlide(indeksSlideSaatIni + 1);
+            }, 6500); 
         }
 
         function gantiKategoriFilter(kat) {
             kategoriAktif = kat;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('bg-amber-500', 'text-slate-950', 'font-bold');
-                btn.classList.add('bg-white/5', 'border', 'border-white/10', 'text-slate-100');
-                if(btn.innerText === kat) {
-                    btn.classList.add('bg-amber-500', 'text-slate-950', 'font-bold');
-                    btn.classList.remove('bg-white/5', 'border', 'border-white/10', 'text-slate-100');
+                btn.style.backgroundColor = "transparent";
+                btn.style.color = "rgba(255, 255, 255, 0.4)";
+                btn.style.boxShadow = "none";
+                
+                if(btn.innerText.includes(kat === 'Semua' ? 'Semua Karya' : kat)) {
+                    btn.style.backgroundColor = warnaAksenGlobal;
+                    btn.style.color = (warnaBgGlobal === "#ffffff" || warnaAksenGlobal === "#ffffff") ? "#0f172a" : "#000000";
+                    btn.style.boxShadow = `0 4px 14px ${warnaAksenGlobal}33`;
                 }
             });
             filterSemuaKonten();
@@ -96,57 +430,62 @@
                 const cocokKategori = (kategoriAktif === "Semua" || lukisan.kategori === kategoriAktif);
                 const cocokSearch = lukisan.judul.toLowerCase().includes(kataKunci);
 
-                if (cocokKategori && cocokSearch) {
-                    const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
-                    
-                    // BARU: LINK WHATSAPP FITUR YANG SEBELUMNYA HILANG
-                    const nomorWA = "6281234567890"; // Ganti dengan nomor WA lu cs
-                    const teksWA = encodeURIComponent(`Halo, saya tertarik dengan lukisan "${lukisan.judul}" seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`);
-                    const linkOrderWA = `https://wa.me/${nomorWA}?text=${teksWA}`;
+                const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
+                const nomorWA = "6281234567890"; 
+                const teksWA = encodeURIComponent(`Halo, saya tertarik dengan lukisan "${lukisan.judul}" seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`);
+                const linkOrderWA = `https://wa.me/${nomorWA}?text=${teksWA}`;
 
-                    const htmlKartu = `
-                        <div class="group bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden hover:border-amber-500/30 transition-all duration-300 relative flex flex-col justify-between">
-                            <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-amber-500/10 to-transparent'} opacity-40 pointer-events-none"></div>
-                            <div>
-                                <div class="relative overflow-hidden aspect-[4/3] bg-black/40">
-                                    <img src="${urlGambarAset}" alt="${lukisan.judul}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500">
-                                    <span class="absolute top-3 right-3 text-[10px] uppercase font-mono font-bold px-2 py-1 rounded border ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}">
-                                        ${lukisan.status}
-                                    </span>
-                                </div>
-                                <div class="p-5 space-y-2 relative z-10">
-                                    <div class="flex justify-between items-start gap-2">
-                                        <h3 class="font-bold text-white text-base group-hover:text-amber-400 transition-colors">${lukisan.judul}</h3>
-                                        <span class="text-[10px] text-slate-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">${lukisan.kategori || 'Seni'}</span>
-                                    </div>
-                                    <p class="text-xs text-slate-400 line-clamp-2 font-light">${lukisan.deskripsi || 'Tidak ada deskripsi.'}</p>
-                                </div>
+                const htmlKartu = `
+                    <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis" style="background-color: ${warnaCardGlobal}">
+                        <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
+                        <div>
+                            <div class="relative overflow-hidden aspect-[4/3] bg-black/40 m-3 rounded-2xl border border-white/5">
+                                <img src="${urlGambarAset}" alt="${lukisan.judul}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out">
+                                <span class="absolute top-3 right-3 text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border backdrop-blur-md ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}">
+                                    • ${lukisan.status}
+                                </span>
                             </div>
-                            <div class="p-5 pt-0 mt-4 space-y-3 relative z-10">
-                                <div class="border-t border-white/5 pt-3 flex justify-between items-center bg-slate-900/40">
-                                    <div>
-                                        <span class="block text-[10px] uppercase tracking-wider text-slate-500">Dimensi</span>
-                                        <span class="text-xs text-slate-300 font-mono">${lukisan.ukuran}</span>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="block text-[10px] uppercase tracking-wider text-amber-500/70">Harga</span>
-                                        <span class="text-sm font-black text-white font-mono">${formatRupiah(lukisan.harga)}</span>
-                                    </div>
+                            
+                            <div class="p-6 space-y-3 relative z-10">
+                                <div class="flex justify-between items-start gap-3">
+                                    <h3 class="font-bold text-white text-base tracking-tight transition-colors duration-300 line-clamp-1 group-hover:text-dinamis-teks-aksen" style="--warna-hover-aksen: ${warnaAksenGlobal}">${lukisan.judul}</h3>
+                                    <span class="text-[9px] text-slate-400 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-lg font-medium tracking-wide shrink-0">${lukisan.kategori || 'Seni'}</span>
                                 </div>
-                                <a href="${linkOrderWA}" target="_blank" class="block w-full text-center bg-white/5 hover:bg-amber-500 hover:text-slate-950 border border-white/10 text-xs font-bold py-2 rounded-xl transition-all uppercase tracking-wider">
-                                    Hubungi Kolektor (Order)
-                                </a>
+                                <p class="text-xs text-slate-400 line-clamp-2 font-light leading-relaxed h-8">${lukisan.deskripsi || 'Tidak ada deskripsi narasi untuk karya seni ini.'}</p>
                             </div>
                         </div>
-                    `;
+                        
+                        <div class="p-6 pt-0 mt-2 space-y-5 relative z-10">
+                            <div class="border-t border-white/5 pt-4 flex justify-between items-center">
+                                <div>
+                                    <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-semibold mb-0.5">Dimensi</span>
+                                    <span class="text-xs text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="block text-[8px] uppercase tracking-widest font-semibold mb-0.5" style="color: ${warnaAksenGlobal}cc">Mahar Karya</span>
+                                    <span class="text-base font-black text-white font-mono tracking-tight">${formatRupiah(lukisan.harga)}</span>
+                                </div>
+                            </div>
+                            
+                            <a href="${linkOrderWA}" target="_blank" class="block w-full text-center border text-xs font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-widest cursor-pointer shadow-md hover:shadow-xl active:scale-[0.99]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
+                                Hubungi Kolektor
+                            </a>
+                        </div>
+                    </div>
+                `;
 
-                    if (lukisan.is_featured === true) wadahFeatured.insertAdjacentHTML('beforeend', htmlKartu);
-                    if (lukisan.is_archive === true) wadahArchive.insertAdjacentHTML('beforeend', htmlKartu);
+                if (lukisan.is_featured === true) {
+                    wadahFeatured.insertAdjacentHTML('beforeend', htmlKartu);
+                }
+                
+                if (cocokKategori && cocokSearch) {
+                    wadahArchive.insertAdjacentHTML('beforeend', htmlKartu);
                 }
             });
 
-            // Sembunyikan heading featured kalau pencarian sedang aktif agar layout rapi
-            document.getElementById("seksi-featured").style.display = kataKunci !== "" ? "none" : "block";
+            let styleHoverExist = document.getElementById("style-hover-klien");
+            if(styleHoverExist) styleHoverExist.remove();
+            document.head.insertAdjacentHTML('beforeend', `<style id="style-hover-klien">.group:hover .group-hover\\:text-dinamis-teks-aksen { color: ${warnaAksenGlobal} !important; }</style>`);
         }
 
         window.addEventListener("DOMContentLoaded", initAplikasiKlien);
