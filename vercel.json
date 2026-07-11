@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/galeri-cms/api/$1" },
+    { "source": "/admin", "destination": "/galeri-cms/admin.html" },
+    { "source": "/(.*)", "destination": "/galeri-pengunjung/$1" }
+  ]
+}
