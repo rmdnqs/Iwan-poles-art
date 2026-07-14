@@ -234,7 +234,7 @@
             }
         }
 
-        // KEMBALI KE FITUR EKSISTING MURNI TANPA INTERAKSI SUPABASE (EFEKTIF & INSTAN)
+        // FITUR EKSISTING MURNI TANPA PENCATATAN KE DASHBOARD (LANGSUNG REDIRECT WA)
         function jalankanKlikWhatsApp(nomorWA, pesanTeks) {
             const nomorBersih = bersihkanNomorWA(nomorWA);
             const urlWA = `https://wa.me/${nomorBersih}?text=${encodeURIComponent(pesanTeks)}`;
@@ -394,12 +394,15 @@
 
             lukisanFeatured.forEach((lukisan, index) => {
                 const urlGambar = lukisan.media || 'https://placehold.co/1200x600?text=No+Image';
-                const pesanTeksWA = `Halo, saya melihat lukisan "${lukisan.judul}" di Slide Unggulan. Apakah unit ini tersedia?`;
+                
+                // Menghindari kerusakan HTML atribut onclick akibat tanda kutip ganda di dalam judul lukisan
+                const judulBersih = lukisan.judul.replace(/['"]/g, '');
+                const pesanTeksWA = `Halo, saya melihat lukisan ${judulBersih} di Slide Unggulan. Apakah unit ini tersedia?`;
 
                 const htmlSlide = `
                     <div class="slide-fade w-full h-full relative ${index === 0 ? 'active' : ''}">
                         <div class="w-full h-full relative overflow-hidden flex justify-center items-center">
-                            <img src="${urlGambar}" alt="${lukisan.judul}" class="w-full h-full object-cover">
+                            <img src="${urlGambar}" alt="${judulBersih}" class="w-full h-full object-cover">
                         </div>
                         
                         <div class="absolute inset-0 z-10 pointer-events-none" style="background: radial-gradient(circle at center, transparent 85%, ${warnaBgGlobal}99 100%);"></div>
@@ -494,14 +497,17 @@
                 const cocokSearch = lukisan.judul.toLowerCase().includes(kataKunci);
 
                 const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
-                const pesanTeksWA = `Halo, saya tertarik dengan lukisan "${lukisan.judul}" seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`;
+                
+                // Menghindari kerusakan HTML atribut onclick akibat tanda kutip ganda di dalam judul lukisan
+                const judulBersih = lukisan.judul.replace(/['"]/g, '');
+                const pesanTeksWA = `Halo, saya tertarik dengan lukisan ${judulBersih} seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`;
 
                 const htmlKartu = `
                     <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis" style="background-color: ${warnaCardGlobal}">
                         <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
                         <div>
                             <div class="relative overflow-hidden aspect-[4/3] bg-black/40 m-3 rounded-2xl border border-white/5">
-                                <img src="${urlGambarAset}" alt="${lukisan.judul}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out">
+                                <img src="${urlGambarAset}" alt="${judulBersih}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out">
                                 <span class="absolute top-3 right-3 text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border backdrop-blur-md ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}">
                                     • ${lukisan.status}
                                 </span>
