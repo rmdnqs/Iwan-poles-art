@@ -203,6 +203,44 @@
             return bersih;
         }
 
+        // ===================================================================
+        // 📊 SISTEM PELACAK STATISTIK WEB (INTEGRASI CMS)
+        // ===================================================================
+        async function catatPengunjungBaru() {
+            try {
+                // Gunakan RPC Supabase untuk increment aman. Jika belum dibuat, gunakan fallback manual
+                const { error } = await dbCloud.rpc('tambah_pengunjung', { baris_id: 1 });
+                
+                if (error) {
+                    let { data: config } = await dbCloud.from('konfigurasi_web').select('total_pengunjung').eq('id', 1).single();
+                    let totalBaru = (config && config.total_pengunjung ? config.total_pengunjung : 0) + 1;
+                    await dbCloud.from('konfigurasi_web').update({ total_pengunjung: totalBaru }).eq('id', 1);
+                }
+            } catch (err) {
+                console.error("Gagal mencatat statistik kunjungan:", err);
+            }
+        }
+
+        async function jalankanKlikWhatsApp(nomorWA, pesanTeks) {
+            try {
+                // Mengirim sinyal increment klik WA ke Supabase
+                const { error } = await dbCloud.rpc('tambah_klik_wa', { baris_id: 1 });
+                
+                if (error) {
+                    let { data: config } = await dbCloud.from('konfigurasi_web').select('total_klik_wa').eq('id', 1).single();
+                    let totalKlikBaru = (config && config.total_klik_wa ? config.total_klik_wa : 0) + 1;
+                    await dbCloud.from('konfigurasi_web').update({ total_klik_wa: totalKlikBaru }).eq('id', 1);
+                }
+            } catch (err) {
+                console.error("Gagal mencatat statistik WhatsApp:", err);
+            } finally {
+                // Arahkan pengunjung ke tautan chat WA
+                const nomorBersih = bersihkanNomorWA(nomorWA);
+                const urlWA = `https://wa.me/${nomorBersih}?text=${encodeURIComponent(pesanTeks)}`;
+                window.open(urlWA, '_blank');
+            }
+        }
+
         function aplikasikanTemaKlien(bgUtama, bgCard, aksen, teksUtama) {
             warnaBgGlobal = bgUtama;
             warnaCardGlobal = bgCard;
@@ -293,6 +331,9 @@
 
         async function initAplikasiKlien() {
             try {
+                // Catat kunjungan halaman baru di database begitu aplikasi dibuka
+                await catatPengunjungBaru();
+
                 // LANGSUNG FETCH REAL-TIME KE CLOUD DATABASE SUPABASE
                 let { data: config, error: configError } = await dbCloud.from('konfigurasi_web').select('*').eq('id', 1).single();
                 if (configError) throw configError;
@@ -356,9 +397,7 @@
 
             lukisanFeatured.forEach((lukisan, index) => {
                 const urlGambar = lukisan.media || 'https://placehold.co/1200x600?text=No+Image';
-                const nomorBersih = bersihkanNomorWA(nomorWhatsAppGlobal);
-                const teksWA = encodeURIComponent(`Halo, saya melihat lukisan "${lukisan.judul}" di Slide Unggulan. Apakah unit ini tersedia?`);
-                const linkOrderWA = `https://wa.me/${nomorBersih}?text=${teksWA}`;
+                const pesanTeksWA = `Halo, saya melihat lukisan "${lukisan.judul}" di Slide Unggulan. Apakah unit ini tersedia?`;
 
                 const htmlSlide = `
                     <div class="slide-fade w-full h-full relative ${index === 0 ? 'active' : ''}">
@@ -394,10 +433,10 @@
                                                 <span class="text-[10px] sm:text-sm text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
                                             </div>
                                         </div>
-                                        <!-- Tombol disesuaikan padding-nya agar kompak di HP -->
-                                        <a href="${linkOrderWA}" target="_blank" class="hover:scale-[1.03] active:scale-95 text-[10px] sm:text-xs font-bold px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
+                                        <!-- Tombol disesuaikan padding-nya agar kompak di HP, dialihkan menggunakan handler klik pencatat statistik -->
+                                        <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanTeksWA}')" class="hover:scale-[1.03] active:scale-95 text-[10px] sm:text-xs font-bold px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
                                             Pesan➔
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -464,9 +503,7 @@
                 const cocokSearch = lukisan.judul.toLowerCase().includes(kataKunci);
 
                 const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
-                const nomorBersih = bersihkanNomorWA(nomorWhatsAppGlobal);
-                const teksWA = encodeURIComponent(`Halo, saya tertarik dengan lukisan "${lukisan.judul}" seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`);
-                const linkOrderWA = `https://wa.me/${nomorBersih}?text=${teksWA}`;
+                const pesanTeksWA = `Halo, saya tertarik dengan lukisan "${lukisan.judul}" seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`;
 
                 const htmlKartu = `
                     <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis" style="background-color: ${warnaCardGlobal}">
@@ -500,9 +537,9 @@
                                 </div>
                             </div>
                             
-                            <a href="${linkOrderWA}" target="_blank" class="block w-full text-center border text-xs font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-widest cursor-pointer shadow-md hover:shadow-xl active:scale-[0.99]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
+                            <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanTeksWA}')" class="block w-full text-center border text-xs font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-widest cursor-pointer shadow-md hover:shadow-xl active:scale-[0.99]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
                                 Hubungi Kolektor
-                            </a>
+                            </button>
                         </div>
                     </div>
                 `;
