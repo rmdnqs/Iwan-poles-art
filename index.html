@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeri Lukisan Premium</title>
+    <title>Iwan Poles Art Galeri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -179,6 +179,7 @@
     <script>
         const dbCloud = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
         let masterDataLukisan = [];
+        let nomorWhatsAppGlobal = "6281234567890"; // Fallback default
         let kategoriAktif = "Semua";
         
         let warnaBgGlobal = "#0f172a"; 
@@ -288,13 +289,29 @@
                 if (configError) throw configError;
 
                 if (config) {
+                    // Simpan nomor WhatsApp dinamis dari konfigurasi database
+                    if (config.nomor_wa) {
+                        nomorWhatsAppGlobal = config.nomor_wa;
+                    }
+
                     document.getElementById("client-logo").src = config.logo_url || "https://placehold.co/100";
                     document.getElementById("client-nama-galeri").innerText = config.nama_galeri || "GALERI SENI";
                     document.getElementById("client-deskripsi-hero").innerText = config.deskripsi_hero || "";
                     
-                    if(config.nama_galeri) document.getElementById("profil-nama-pelukis").innerText = config.nama_galeri;
-                    if(config.logo_url) document.getElementById("profil-foto-pelukis").src = config.logo_url;
-                    if(config.deskripsi_hero) document.getElementById("profil-narasi").innerText = config.deskripsi_hero;
+                    // Dinamisasi Bagian Profil Pelukis (Menggunakan data profil spesifik dari db)
+                    if(config.nama_galeri) {
+                        document.getElementById("profil-nama-pelukis").innerText = config.nama_galeri;
+                    }
+                    if(config.foto_pelukis) {
+                        document.getElementById("profil-foto-pelukis").src = config.foto_pelukis;
+                    } else if(config.logo_url) {
+                        document.getElementById("profil-foto-pelukis").src = config.logo_url;
+                    }
+                    if(config.deskripsi_pelukis) {
+                        document.getElementById("profil-narasi").innerText = config.deskripsi_pelukis;
+                    } else if(config.deskripsi_hero) {
+                        document.getElementById("profil-narasi").innerText = config.deskripsi_hero;
+                    }
 
                     aplikasikanTemaKlien(
                         config.warna_bg_utama || "#020617",
@@ -330,9 +347,8 @@
 
             lukisanFeatured.forEach((lukisan, index) => {
                 const urlGambar = lukisan.media || 'https://placehold.co/1200x600?text=No+Image';
-                const nomorWA = "6281234567890"; 
                 const teksWA = encodeURIComponent(`Halo, saya melihat lukisan "${lukisan.judul}" di Slide Unggulan. Apakah unit ini tersedia?`);
-                const linkOrderWA = `https://wa.me/${nomorWA}?text=${teksWA}`;
+                const linkOrderWA = `https://wa.me/${nomorWhatsAppGlobal}?text=${teksWA}`;
 
                 const htmlSlide = `
                     <div class="slide-fade w-full h-full relative ${index === 0 ? 'active' : ''}">
@@ -433,9 +449,8 @@
                 const cocokSearch = lukisan.judul.toLowerCase().includes(kataKunci);
 
                 const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
-                const nomorWA = "6281234567890"; 
                 const teksWA = encodeURIComponent(`Halo, saya tertarik dengan lukisan "${lukisan.judul}" seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`);
-                const linkOrderWA = `https://wa.me/${nomorWA}?text=${teksWA}`;
+                const linkOrderWA = `https://wa.me/${nomorWhatsAppGlobal}?text=${teksWA}`;
 
                 const htmlKartu = `
                     <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis" style="background-color: ${warnaCardGlobal}">
