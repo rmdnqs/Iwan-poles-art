@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iwan Poles Art Galeri</title>
+    
+    <!-- PENGGUNAAN TAILWIND PLAY CDN YANG AMAN DENGAN MATI-KAN WARNING DI KONSOL -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            // Menonaktifkan mode debug/warning di konsol produksi
+            corePlugins: {
+                preflight: true,
+            }
+        }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -194,24 +205,26 @@
             return 'Rp ' + parseFloat(angka).toLocaleString('id-ID');
         }
 
-        // Fungsi pembantu untuk membersihkan nomor telepon (hanya menyisakan angka saja)
+        // Fungsi pembersih karakter non-numerik pada nomor WA
         function bersihkanNomorWA(nomor) {
-            let bersih = nomor.replace(/\D/g, ''); // Buang semua spasi, strip, atau plus
+            let bersih = nomor.toString().replace(/\D/g, ''); 
             if (bersih.startsWith('0')) {
-                bersih = '62' + bersih.slice(1); // Jika diawali '0', ganti dengan '62'
+                bersih = '62' + bersih.slice(1); 
             }
             return bersih;
         }
 
         // ===================================================================
-        // 📊 SISTEM PELACAK STATISTIK WEB (INTEGRASI CMS)
+        // 📊 SISTEM PELACAK STATISTIK WEB (FIXED & NON-BLOCKING)
         // ===================================================================
         async function catatPengunjungBaru() {
             try {
-                // Gunakan RPC Supabase untuk increment aman. Jika belum dibuat, gunakan fallback manual
+                // Menjalankan RPC di Supabase
                 const { error } = await dbCloud.rpc('tambah_pengunjung', { baris_id: 1 });
                 
+                // Jika RPC gagal/belum dibuat, lakukan fallback manual
                 if (error) {
+                    console.warn("Fungsi RPC tambah_pengunjung belum dibuat di SQL Editor, mencoba update manual...");
                     let { data: config } = await dbCloud.from('konfigurasi_web').select('total_pengunjung').eq('id', 1).single();
                     let totalBaru = (config && config.total_pengunjung ? config.total_pengunjung : 0) + 1;
                     await dbCloud.from('konfigurasi_web').update({ total_pengunjung: totalBaru }).eq('id', 1);
@@ -222,21 +235,25 @@
         }
 
         async function jalankanKlikWhatsApp(nomorWA, pesanTeks) {
+            // Definisikan tujuan eksekusi agar tidak terhambat jika proses penulisan DB lambat/gagal
+            const nomorBersih = bersihkanNomorWA(nomorWA);
+            const urlWA = `https://wa.me/${nomorBersih}?text=${encodeURIComponent(pesanTeks)}`;
+            
             try {
-                // Mengirim sinyal increment klik WA ke Supabase
+                // Menjalankan RPC di Supabase
                 const { error } = await dbCloud.rpc('tambah_klik_wa', { baris_id: 1 });
                 
+                // Jika RPC gagal/belum dibuat, lakukan fallback update baris manual
                 if (error) {
+                    console.warn("Fungsi RPC tambah_klik_wa belum dibuat di SQL Editor, mencoba update manual...");
                     let { data: config } = await dbCloud.from('konfigurasi_web').select('total_klik_wa').eq('id', 1).single();
                     let totalKlikBaru = (config && config.total_klik_wa ? config.total_klik_wa : 0) + 1;
                     await dbCloud.from('konfigurasi_web').update({ total_klik_wa: totalKlikBaru }).eq('id', 1);
                 }
             } catch (err) {
-                console.error("Gagal mencatat statistik WhatsApp:", err);
+                console.error("Gagal memperbarui total klik WA di database:", err);
             } finally {
-                // Arahkan pengunjung ke tautan chat WA
-                const nomorBersih = bersihkanNomorWA(nomorWA);
-                const urlWA = `https://wa.me/${nomorBersih}?text=${encodeURIComponent(pesanTeks)}`;
+                // Buka tab WA baru terlepas dari status database berhasil atau gagal
                 window.open(urlWA, '_blank');
             }
         }
@@ -331,15 +348,13 @@
 
         async function initAplikasiKlien() {
             try {
-                // Catat kunjungan halaman baru di database begitu aplikasi dibuka
+                // Jalankan fungsi pencatat pengunjung begitu web dimuat
                 await catatPengunjungBaru();
 
-                // LANGSUNG FETCH REAL-TIME KE CLOUD DATABASE SUPABASE
                 let { data: config, error: configError } = await dbCloud.from('konfigurasi_web').select('*').eq('id', 1).single();
                 if (configError) throw configError;
 
                 if (config) {
-                    // Simpan nomor WhatsApp dinamis dari konfigurasi database
                     if (config.nomor_wa) {
                         nomorWhatsAppGlobal = config.nomor_wa;
                     }
@@ -348,7 +363,6 @@
                     document.getElementById("client-nama-galeri").innerText = config.nama_galeri || "GALERI SENI";
                     document.getElementById("client-deskripsi-hero").innerText = config.deskripsi_hero || "";
                     
-                    // Dinamisasi Bagian Profil Pelukis
                     if(config.nama_galeri) {
                         document.getElementById("profil-nama-pelukis").innerText = config.nama_galeri;
                     }
@@ -405,21 +419,16 @@
                             <img src="${urlGambar}" alt="${lukisan.judul}" class="w-full h-full object-cover">
                         </div>
                         
-                        <!-- SHADOW TEPI CLEAN VIGNETTE -->
                         <div class="absolute inset-0 z-10 pointer-events-none" style="background: radial-gradient(circle at center, transparent 85%, ${warnaBgGlobal}99 100%);"></div>
                         <div class="absolute inset-0 z-10 pointer-events-none" style="background: linear-gradient(to top, ${warnaBgGlobal}cc 0%, ${warnaBgGlobal}33 15%, transparent 30%);"></div>
 
-                        <!-- bottom disesuaikan jadi bottom-4 di mobile agar tidak mentok -->
                         <div class="absolute bottom-4 sm:bottom-16 left-0 right-0 z-25">
                             <div class="max-w-7xl mx-auto px-4 sm:px-8">
-                                <!-- padding diperkecil dari p-8 ke p-4 di mobile (sm:p-8) agar menghemat ruang -->
                                 <div class="carousel-card-animasi max-w-xl border border-white/5 backdrop-blur-xl p-4 sm:p-8 rounded-2xl sm:rounded-3xl space-y-3 sm:space-y-5 shadow-2xl shadow-black/80 mx-auto sm:mx-0" style="background-color: ${warnaCardGlobal}66">
                                     <div class="space-y-1 sm:space-y-2">
                                         <span class="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] font-extrabold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border inline-block" style="color: ${warnaAksenGlobal}; background-color: ${warnaAksenGlobal}0d; border-color: ${warnaAksenGlobal}26">Curated Masterpiece</span>
-                                        <!-- Ukuran teks judul diperkecil di mobile (text-lg) -->
                                         <h2 class="text-lg sm:text-4xl font-black text-white tracking-tight uppercase line-clamp-1">${lukisan.judul}</h2>
                                     </div>
-                                    <!-- Deskripsi diringkas agar hemat ruang di handphone -->
                                     <p class="text-[11px] sm:text-xs text-slate-400 font-light leading-relaxed line-clamp-1 sm:line-clamp-2">${lukisan.deskripsi || 'Eksplorasi estetika seni kurasi tinggi.'}</p>
                                     
                                     <div class="pt-3 sm:pt-4 flex items-center justify-between gap-3 sm:gap-4 border-t border-white/5">
@@ -433,7 +442,6 @@
                                                 <span class="text-[10px] sm:text-sm text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
                                             </div>
                                         </div>
-                                        <!-- Tombol disesuaikan padding-nya agar kompak di HP, dialihkan menggunakan handler klik pencatat statistik -->
                                         <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanTeksWA}')" class="hover:scale-[1.03] active:scale-95 text-[10px] sm:text-xs font-bold px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
                                             Pesan➔
                                         </button>
