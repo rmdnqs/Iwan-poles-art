@@ -196,7 +196,11 @@
 
         // Fungsi pembantu untuk membersihkan nomor telepon (hanya menyisakan angka saja)
         function bersihkanNomorWA(nomor) {
-            return nomor.replace(/\D/g, '');
+            let bersih = nomor.replace(/\D/g, ''); // Buang semua spasi, strip, atau plus
+            if (bersih.startsWith('0')) {
+                bersih = '62' + bersih.slice(1); // Jika diawali '0', ganti dengan '62'
+            }
+            return bersih;
         }
 
         function aplikasikanTemaKlien(bgUtama, bgCard, aksen, teksUtama) {
