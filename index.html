@@ -350,6 +350,7 @@
                 const teksWA = encodeURIComponent(`Halo, saya melihat lukisan "${lukisan.judul}" di Slide Unggulan. Apakah unit ini tersedia?`);
                 const linkOrderWA = `https://wa.me/${nomorWhatsAppGlobal}?text=${teksWA}`;
 
+                // IMPLEMENTASI RESPONSIVITAS TERBARU (PENERAPAN PADDING & POSISI DI MOBILE VIEW)
                 const htmlSlide = `
                     <div class="slide-fade w-full h-full relative ${index === 0 ? 'active' : ''}">
                         <div class="w-full h-full relative overflow-hidden flex justify-center items-center">
@@ -360,28 +361,33 @@
                         <div class="absolute inset-0 z-10 pointer-events-none" style="background: radial-gradient(circle at center, transparent 85%, ${warnaBgGlobal}99 100%);"></div>
                         <div class="absolute inset-0 z-10 pointer-events-none" style="background: linear-gradient(to top, ${warnaBgGlobal}cc 0%, ${warnaBgGlobal}33 15%, transparent 30%);"></div>
 
-                        <div class="absolute bottom-16 left-0 right-0 z-25">
+                        <!-- bottom disesuaikan jadi bottom-4 di mobile agar tidak mentok -->
+                        <div class="absolute bottom-4 sm:bottom-16 left-0 right-0 z-25">
                             <div class="max-w-7xl mx-auto px-4 sm:px-8">
-                                <div class="carousel-card-animasi max-w-xl border border-white/5 backdrop-blur-xl p-8 rounded-3xl space-y-5 shadow-2xl shadow-black/80" style="background-color: ${warnaCardGlobal}66">
-                                    <div class="space-y-2">
-                                        <span class="text-[9px] uppercase tracking-[0.2em] font-extrabold px-3 py-1 rounded-full border inline-block" style="color: ${warnaAksenGlobal}; background-color: ${warnaAksenGlobal}0d; border-color: ${warnaAksenGlobal}26">Curated Masterpiece</span>
-                                        <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase">${lukisan.judul}</h2>
+                                <!-- padding diperkecil dari p-8 ke p-4 di mobile (sm:p-8) agar menghemat ruang -->
+                                <div class="carousel-card-animasi max-w-xl border border-white/5 backdrop-blur-xl p-4 sm:p-8 rounded-2xl sm:rounded-3xl space-y-3 sm:space-y-5 shadow-2xl shadow-black/80 mx-auto sm:mx-0" style="background-color: ${warnaCardGlobal}66">
+                                    <div class="space-y-1 sm:space-y-2">
+                                        <span class="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] font-extrabold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border inline-block" style="color: ${warnaAksenGlobal}; background-color: ${warnaAksenGlobal}0d; border-color: ${warnaAksenGlobal}26">Curated Masterpiece</span>
+                                        <!-- Ukuran teks judul diperkecil di mobile (text-lg) -->
+                                        <h2 class="text-lg sm:text-4xl font-black text-white tracking-tight uppercase line-clamp-1">${lukisan.judul}</h2>
                                     </div>
-                                    <p class="text-xs text-slate-400 font-light leading-relaxed line-clamp-2">${lukisan.deskripsi || 'Eksplorasi estetika seni kurasi tinggi.'}</p>
+                                    <!-- Deskripsi diringkas agar hemat ruang di handphone -->
+                                    <p class="text-[11px] sm:text-xs text-slate-400 font-light leading-relaxed line-clamp-1 sm:line-clamp-2">${lukisan.deskripsi || 'Eksplorasi estetika seni kurasi tinggi.'}</p>
                                     
-                                    <div class="pt-4 flex items-center justify-between gap-4 border-t border-white/5">
-                                        <div class="flex items-center gap-6">
+                                    <div class="pt-3 sm:pt-4 flex items-center justify-between gap-3 sm:gap-4 border-t border-white/5">
+                                        <div class="flex items-center gap-4 sm:gap-6">
                                             <div>
-                                                <span class="block text-[8px] text-slate-500 uppercase tracking-widest font-semibold mb-0.5">Mahar Karya</span>
-                                                <span class="text-sm sm:text-lg font-black font-mono tracking-tight" style="color: ${warnaAksenGlobal}">${formatRupiah(lukisan.harga)}</span>
+                                                <span class="block text-[7px] sm:text-[8px] text-slate-500 uppercase tracking-widest font-semibold mb-0.5">Mahar Karya</span>
+                                                <span class="text-xs sm:text-lg font-black font-mono tracking-tight" style="color: ${warnaAksenGlobal}">${formatRupiah(lukisan.harga)}</span>
                                             </div>
-                                            <div class="border-l border-white/10 pl-6">
-                                                <span class="block text-[8px] text-slate-500 uppercase tracking-widest font-semibold mb-0.5">Dimensi</span>
-                                                <span class="text-xs sm:text-sm text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
+                                            <div class="border-l border-white/10 pl-4 sm:pl-6">
+                                                <span class="block text-[7px] sm:text-[8px] text-slate-500 uppercase tracking-widest font-semibold mb-0.5">Dimensi</span>
+                                                <span class="text-[10px] sm:text-sm text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
                                             </div>
                                         </div>
-                                        <a href="${linkOrderWA}" target="_blank" class="hover:scale-[1.03] active:scale-95 text-xs font-bold px-6 py-3.5 rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
-                                            Pesan Sekarang➔
+                                        <!-- Tombol disesuaikan padding-nya agar kompak di HP -->
+                                        <a href="${linkOrderWA}" target="_blank" class="hover:scale-[1.03] active:scale-95 text-[10px] sm:text-xs font-bold px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
+                                            Pesan➔
                                         </a>
                                     </div>
                                 </div>
