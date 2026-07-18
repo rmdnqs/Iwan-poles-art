@@ -68,6 +68,18 @@
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 99px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+        /* Fitur Zoom Preview Smooth */
+        .zoom-container {
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+        .zoom-container img {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .zoom-container:hover img {
+            transform: scale(1.5);
+        }
     </style>
 </head>
 <body id="body-klien" class="bg-slate-950 text-slate-100 min-h-screen transition-all duration-500 antialiased selection:bg-amber-500 selection:text-slate-950">
@@ -123,9 +135,7 @@
                 </div>
             </section>
 
-            <!-- ========================================== -->
-            <!-- SECTION BARU: JASA LUKIS WAJAH             -->
-            <!-- ========================================== -->
+            <!-- SECTION BARU: JASA LUKIS WAJAH -->
             <section id="seksi-lukis-wajah" class="space-y-10 scroll-mt-28">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
                     <div class="flex items-center gap-3">
@@ -198,6 +208,51 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- MODAL DETAIL & ZOOM PREVIEW LUKISAN       -->
+    <!-- ========================================== -->
+    <div id="modal-detail-lukisan" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-y-auto border border-white/10 flex flex-col md:flex-row shadow-2xl overflow-hidden relative" id="inner-modal-detail">
+            <!-- Sisi Gambar Kiri + Fitur Live Magnify Zoom -->
+            <div class="w-full md:w-3/5 bg-black/40 flex items-center justify-center relative min-h-[300px] md:min-h-[450px] overflow-hidden zoom-container" onmousemove="efekKursorZoom(event)" onmouseleave="resetKursorZoom()">
+                <img id="modal-img" src="" alt="Detail Gambar" class="w-full h-full object-contain pointer-events-none">
+                <span class="absolute bottom-4 left-4 text-[10px] uppercase font-bold tracking-wider bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-slate-300 pointer-events-none">🔍 Sorot Gambar Untuk Zoom</span>
+            </div>
+            <!-- Sisi Informasi Kanan -->
+            <div class="w-full md:w-2/5 p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left" id="modal-info-pane">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center gap-2">
+                        <span id="modal-kategori" class="text-[9px] text-slate-400 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-lg font-medium tracking-wide">Kategori</span>
+                        <span id="modal-status" class="text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border">Status</span>
+                    </div>
+                    <h3 id="modal-judul" class="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">Judul Lukisan</h3>
+                    <div class="border-t border-white/5 pt-3">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Deskripsi Narasi</h4>
+                        <p id="modal-deskripsi" class="text-xs text-slate-300 font-light leading-relaxed max-h-[150px] overflow-y-auto pr-1">Narasi deskripsi lengkap lukisan...</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4 border-t border-white/5 pt-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-semibold mb-0.5">Dimensi</span>
+                            <span id="modal-ukuran" class="text-xs text-slate-300 font-mono font-medium">-</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-[8px] uppercase tracking-widest font-semibold mb-0.5" id="modal-label-harga">Mahar</span>
+                            <span id="modal-harga" class="text-lg font-black text-white font-mono tracking-tight">-</span>
+                        </div>
+                    </div>
+                    <button id="modal-btn-wa" class="block w-full text-center text-xs font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-widest cursor-pointer shadow-md hover:shadow-xl active:scale-[0.99]">
+                        Hubungi Kolektor
+                    </button>
+                </div>
+            </div>
+            <!-- Tombol Close Modal -->
+            <button onclick="tutupModalDetail()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 border border-white/10 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all duration-300 text-sm z-50 text-white cursor-pointer">✕</button>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <div class="max-w-7xl mx-auto px-4 sm:px-8">
         <footer class="py-12 mt-20 border-t border-white/5 text-center text-[11px] text-slate-500 tracking-widest font-light uppercase">
@@ -251,6 +306,102 @@
             const nomorBersih = bersihkanNomorWA(nomorWA);
             const urlWA = `https://wa.me/${nomorBersih}?text=${encodeURIComponent(pesanTeks)}`;
             window.open(urlWA, '_blank');
+        }
+
+        // FUNGSI UNTUK MODAL DETAIL & ACTION BINDING
+        function bukaModalDetail(idLukisan, tipeContext) {
+            const lukisan = masterDataLukisan.find(item => item.id == idLukisan);
+            if(!lukisan) return;
+
+            const modal = document.getElementById("modal-detail-lukisan");
+            const innerModal = document.getElementById("inner-modal-detail");
+            const paneInfo = document.getElementById("modal-info-pane");
+            
+            // Terapkan Tema Warna Dinamis Klien ke Elemen Modal
+            innerModal.style.backgroundColor = warnaCardGlobal;
+            paneInfo.style.backgroundColor = warnaCardGlobal;
+            document.getElementById("modal-judul").style.color = warnaTeksGlobal;
+            document.getElementById("modal-kategori").style.borderColor = "rgba(255,255,255,0.1)";
+            document.getElementById("modal-label-harga").style.color = `${warnaAksenGlobal}cc`;
+
+            // Suntik Data Gambar & Teks
+            document.getElementById("modal-img").style.transform = "scale(1)";
+            document.getElementById("modal-img").src = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
+            document.getElementById("modal-judul").innerText = lukisan.judul;
+            document.getElementById("modal-kategori").innerText = lukisan.kategori || 'Seni';
+            document.getElementById("modal-ukuran").innerText = lukisan.ukuran;
+            document.getElementById("modal-harga").innerText = formatRupiah(lukisan.harga);
+            document.getElementById("modal-deskripsi").innerText = lukisan.deskripsi || 'Tidak ada deskripsi narasi untuk karya seni ini.';
+
+            // Status Badge
+            const statusBadge = document.getElementById("modal-status");
+            statusBadge.innerText = `• ${lukisan.status}`;
+            if(lukisan.status === 'Tersedia') {
+                statusBadge.className = "text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border bg-emerald-500/10 border-emerald-500/20 text-emerald-400";
+            } else {
+                statusBadge.className = "text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border bg-red-500/10 border-red-500/20 text-red-400";
+            }
+
+            // Atur Trigger Pesan WA
+            const btnWA = document.getElementById("modal-btn-wa");
+            btnWA.style.backgroundColor = warnaAksenGlobal;
+            btnWA.style.borderColor = warnaAksenGlobal;
+            btnWA.style.color = (warnaBgGlobal === '#ffffff' || warnaAksenGlobal === '#ffffff') ? '#0f172a' : '#000000';
+            
+            let pesanWA = "";
+            const judulBersih = lukisan.judul.replace(/['"]/g, '');
+            if(tipeContext === 'featured') {
+                btnWA.innerText = "Hubungi Kolektor";
+                pesanWA = `Halo, saya tertarik dengan lukisan ${judulBersih} seharga ${formatRupiah(lukisan.harga)} di Koleksi Unggulan. Apakah masih tersedia?`;
+            } else if(tipeContext === 'lukis-wajah') {
+                btnWA.innerText = "Hubungi Kolektor";
+                pesanWA = `Halo Maestro, saya ingin memesan Jasa Lukis Wajah seperti portofolio "${judulBersih}". Bagaimana alur pemesanannya?`;
+            } else {
+                btnWA.innerText = "Hubungi Kolektor";
+                pesanWA = `Halo, saya melihat karya "${judulBersih}" di katalog. Apakah unit ini tersedia untuk dikoleksi?`;
+            }
+            btnWA.onclick = () => jalankanKlikWhatsApp(nomorWhatsAppGlobal, pesanWA);
+
+            // Buka dengan Efek Fade In
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            setTimeout(() => {
+                modal.classList.remove("opacity-0");
+                modal.classList.add("opacity-100");
+            }, 10);
+        }
+
+        function tutupModalDetail() {
+            const modal = document.getElementById("modal-detail-lukisan");
+            modal.classList.remove("opacity-100");
+            modal.classList.add("opacity-0");
+            setTimeout(() => {
+                modal.classList.remove("flex");
+                modal.classList.add("hidden");
+            }, 300);
+        }
+
+        // LOGIKA LIVE MAGNIFY PREVIEW ZOOM
+        function efekKursorZoom(e) {
+            const wadahZoom = e.currentTarget;
+            const gambar = wadahZoom.querySelector("img");
+            
+            // Hitung persentase posisi mouse terhadap container gambar
+            const rect = wadahZoom.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const xPersen = (x / rect.width) * 100;
+            const yPersen = (y / rect.height) * 100;
+            
+            gambar.style.transformOrigin = `${xPersen}% ${yPersen}%`;
+            gambar.style.transform = "scale(2.2)";
+        }
+
+        function resetKursorZoom() {
+            const gambar = document.getElementById("modal-img");
+            gambar.style.transformOrigin = "center center";
+            gambar.style.transform = "scale(1)";
         }
 
         function aplikasikanTemaKlien(bgUtama, bgCard, aksen, teksUtama) {
@@ -416,11 +567,10 @@
             lukisanFeatured.forEach((lukisan, index) => {
                 const urlGambar = lukisan.media || 'https://placehold.co/1200x600?text=No+Image';
                 const judulBersih = lukisan.judul.replace(/['"]/g, '');
-                const pesanTeksWA = `Halo, saya melihat lukisan ${judulBersih} di Slide Unggulan. Apakah unit ini tersedia?`;
 
                 const htmlSlide = `
                     <div class="slide-fade w-full h-full relative ${index === 0 ? 'active' : ''}">
-                        <div class="w-full h-full relative overflow-hidden flex justify-center items-center">
+                        <div class="w-full h-full relative overflow-hidden flex justify-center items-center cursor-pointer" onclick="bukaModalDetail(${lukisan.id}, 'featured')">
                             <img src="${urlGambar}" alt="${judulBersih}" class="w-full h-full object-cover">
                         </div>
                         
@@ -430,14 +580,14 @@
                         <div class="absolute bottom-4 sm:bottom-16 left-0 right-0 z-25">
                             <div class="max-w-7xl mx-auto px-4 sm:px-8">
                                 <div class="carousel-card-animasi max-w-xl border border-white/5 backdrop-blur-xl p-4 sm:p-8 rounded-2xl sm:rounded-3xl space-y-3 sm:space-y-5 shadow-2xl shadow-black/80 mx-auto sm:mx-0" style="background-color: ${warnaCardGlobal}66">
-                                    <div class="space-y-1 sm:space-y-2">
+                                    <div class="space-y-1 sm:space-y-2 cursor-pointer" onclick="bukaModalDetail(${lukisan.id}, 'featured')">
                                         <span class="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] font-extrabold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border inline-block" style="color: ${warnaAksenGlobal}; background-color: ${warnaAksenGlobal}0d; border-color: ${warnaAksenGlobal}26">Curated Masterpiece</span>
                                         <h2 class="text-lg sm:text-4xl font-black text-white tracking-tight uppercase line-clamp-1">${lukisan.judul}</h2>
                                     </div>
-                                    <p class="text-[11px] sm:text-xs text-slate-400 font-light leading-relaxed line-clamp-1 sm:line-clamp-2">${lukisan.deskripsi || 'Eksplorasi estetika seni kurasi tinggi.'}</p>
+                                    <p class="text-[11px] sm:text-xs text-slate-400 font-light leading-relaxed line-clamp-1 sm:line-clamp-2 cursor-pointer" onclick="bukaModalDetail(${lukisan.id}, 'featured')">${lukisan.deskripsi || 'Eksplorasi estetika seni kurasi tinggi.'}</p>
                                     
                                     <div class="pt-3 sm:pt-4 flex items-center justify-between gap-3 sm:gap-4 border-t border-white/5">
-                                        <div class="flex items-center gap-4 sm:gap-6">
+                                        <div class="flex items-center gap-4 sm:gap-6 cursor-pointer" onclick="bukaModalDetail(${lukisan.id}, 'featured')">
                                             <div>
                                                 <span class="block text-[7px] sm:text-[8px] text-slate-500 uppercase tracking-widest font-semibold mb-0.5">Mahar Karya</span>
                                                 <span class="text-xs sm:text-lg font-black font-mono tracking-tight" style="color: ${warnaAksenGlobal}">${formatRupiah(lukisan.harga)}</span>
@@ -447,8 +597,8 @@
                                                 <span class="text-[10px] sm:text-sm text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
                                             </div>
                                         </div>
-                                        <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanTeksWA}')" class="hover:scale-[1.03] active:scale-95 text-[10px] sm:text-xs font-bold px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
-                                            Pesan➔
+                                        <button onclick="bukaModalDetail(${lukisan.id}, 'featured')" class="hover:scale-[1.03] active:scale-95 text-[10px] sm:text-xs font-bold px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl transition-all duration-300 uppercase tracking-widest cursor-pointer flex items-center gap-2 shrink-0 shadow-xl shadow-black/20" style="background-color: ${warnaTeksGlobal}; color: ${warnaBgGlobal};">
+                                            Detail➔
                                         </button>
                                     </div>
                                 </div>
@@ -514,6 +664,7 @@
             wadahArchive.innerHTML = "";
 
             let adaLukisWajah = false;
+            let adaKatalogCocok = false;
 
             masterDataLukisan.forEach(lukisan => {
                 const cocokKategori = (kategoriAktif === "Semua" || lukisan.kategori === kategoriAktif);
@@ -521,10 +672,22 @@
                 const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
                 const judulBersih = lukisan.judul.replace(/['"]/g, '');
 
-                const buildHtmlCard = (pesanWhatsApp, labelTombol = "Hubungi Kolektor") => `
-                    <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis" style="background-color: ${warnaCardGlobal}">
+                // SUNTIK TEKS PESAN WHATSAPP YANG DINAMIS BERDASARKAN KONTEKS KATEGORI
+                let pesanWhatsApp = "";
+                if(lukisan.is_lukis_wajah === true) {
+                    pesanWhatsApp = `Halo Maestro, saya ingin memesan Jasa Lukis Wajah berdasarkan portofolio "${judulBersih}". Bagaimana alur pemesanannya?`;
+                } else if(lukisan.is_featured === true) {
+                    pesanWhatsApp = `Halo, saya tertarik dengan lukisan Unggulan "${judulBersih}" seharga ${formatRupiah(lukisan.harga)}. Apakah unit masih tersedia?`;
+                } else {
+                    pesanWhatsApp = `Halo, saya melihat karya "${judulBersih}" di katalog galeri Anda. Apakah unit ini tersedia untuk dikoleksi?`;
+                }
+
+                const buildHtmlCard = (contextType) => `
+                    <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis bg-slate-900" style="background-color: ${warnaCardGlobal}">
                         <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
-                        <div>
+                        
+                        <!-- Area Gambar & Info yang Bisa Diklik untuk Detail -->
+                        <div onclick="bukaModalDetail(${lukisan.id}, '${contextType}')" class="cursor-pointer">
                             <div class="relative overflow-hidden aspect-[4/3] bg-black/40 m-3 rounded-2xl border border-white/5">
                                 <img src="${urlGambarAset}" alt="${judulBersih}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out">
                                 <span class="absolute top-3 right-3 text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border backdrop-blur-md ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}">
@@ -541,6 +704,7 @@
                             </div>
                         </div>
                         
+                        <!-- Bagian Bawah Card: Informasi Dimensi & Dua Tombol Berdampingan -->
                         <div class="p-6 pt-0 mt-2 space-y-5 relative z-10">
                             <div class="border-t border-white/5 pt-4 flex justify-between items-center">
                                 <div>
@@ -553,32 +717,41 @@
                                 </div>
                             </div>
                             
-                            <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanWhatsApp}')" class="block w-full text-center border text-xs font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-widest cursor-pointer shadow-md hover:shadow-xl active:scale-[0.99]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
-                                ${labelTombol}
-                            </button>
+                            <!-- OPERASIONAL 2 TOMBOL PARALEL BERDAMPINGAN -->
+                            <div class="flex gap-2 w-full">
+                                <button onclick="bukaModalDetail(${lukisan.id}, '${contextType}')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer bg-transparent text-slate-300 border-white/10 hover:bg-white/5 active:scale-[0.98]">
+                                    Tampilkan Detail
+                                </button>
+                                <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanWhatsApp}')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer shadow-md hover:shadow-xl active:scale-[0.98]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
+                                    Hubungi Kolektor
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
 
                 // 1. Kondisi Render ke Section Featured
                 if (lukisan.is_featured === true) {
-                    const pesanFeatured = `Halo, saya tertarik dengan lukisan ${judulBersih} seharga ${formatRupiah(lukisan.harga)}. Apakah masih tersedia?`;
-                    wadahFeatured.insertAdjacentHTML('beforeend', buildHtmlCard(pesanFeatured, "Hubungi Kolektor"));
+                    wadahFeatured.insertAdjacentHTML('beforeend', buildHtmlCard("featured"));
                 }
                 
-                // 2. Kondisi Render ke Section Jasa Lukis Wajah Baru
+                // 2. Kondisi Render ke Section Jasa Lukis Wajah
                 if (lukisan.is_lukis_wajah === true) {
                     adaLukisWajah = true;
-                    const pesanLukisWajah = `Halo Maestro, saya ingin memesan Jasa Lukis Wajah seperti portofolio "${judulBersih}". Bagaimana alur pemesanannya?`;
-                    wadahLukisWajah.insertAdjacentHTML('beforeend', buildHtmlCard(pesanLukisWajah, "Order Lukis Wajah"));
+                    wadahLukisWajah.insertAdjacentHTML('beforeend', buildHtmlCard("lukis-wajah"));
                 }
 
-                // 3. Kondisi Render ke Tab Katalog (Arsip)
-                if (cocokKategori && cocokSearch && lukisan.is_archive === true) {
-                    const pesanKatalog = `Halo, saya melihat karya "${judulBersih}" di katalog. Apakah unit ini tersedia untuk dikoleksi?`;
-                    wadahArchive.insertAdjacentHTML('beforeend', buildHtmlCard(pesanKatalog, "Tanyakan Karya"));
+                // 3. Kondisi Render ke Tab Katalog (Arsip) - [DIPERBAIKI AGAR OTOMATIS MUNCUL TANPA IS_ARCHIVE MANDATORY]
+                if (cocokKategori && cocokSearch) {
+                    adaKatalogCocok = true;
+                    wadahArchive.insertAdjacentHTML('beforeend', buildHtmlCard("katalog"));
                 }
             });
+
+            // Handle jika hasil filter di tab katalog kosong (misal tidak ada kategori terkait)
+            if(!adaKatalogCocok){
+                wadahArchive.innerHTML = `<p class="text-xs text-slate-500 italic text-center col-span-full py-10">Tidak ada karya seni yang cocok dengan kategori "${kategoriAktif}" atau kata kunci pencarian.</p>`;
+            }
 
             // Sembunyikan section/tombol menu jika database lukis wajah kosong
             const seksiLukisWajah = document.getElementById("seksi-lukis-wajah");
