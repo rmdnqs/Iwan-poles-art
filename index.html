@@ -81,10 +81,13 @@
             transform: scale(1.5);
         }
 
-        /* Struktur CSS Khusus untuk Overlapping Stacked Panels */
+        /* Struktur CSS Khusus untuk Overlapping Stacked Panels - Dioptimalkan untuk Safari iOS */
         .card-panel-stacked {
             position: relative;
             z-index: 1;
+            will-change: transform, opacity;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
         }
     </style>
 </head>
@@ -683,21 +686,21 @@
                     btn.style.boxShadow = `0 4px 14px ${warnaAksenGlobal}33`;
                 }
             });
-            filterSemuaKonten();
+            filterSemualKonten();
         }
 
         // ==========================================
-        // MANAJEMEN ANIMASI VELOCITY & OVERLAPPING
+        // MANAJEMEN ANIMASI VELOCITY & OVERLAPPING (SAFARI FIX)
         // ==========================================
         function aktifkanSistemAnimasiScrollImersif() {
-            // A. EFEK VELOCITY SKEW (Gambar akan sedikit memiring jika di-scroll secara akseleratif)
+            // A. EFEK VELOCITY SKEW
             let objekProxy = { skew: 0 },
                 skalarSkewSetter = gsap.quickSetter(".velocity-skew-img", "skewY", "deg"),
-                pembatasNilai = gsap.utils.clamp(-7, 7); 
+                pembatasNilai = gsap.utils.clamp(-6, 6); 
 
             ScrollTrigger.create({
                 onUpdate: (self) => {
-                    let nilaiSkew = pembatasNilai(self.getVelocity() / -350);
+                    let nilaiSkew = pembatasNilai(self.getVelocity() / -400);
                     if (Math.abs(nilaiSkew) > Math.abs(objekProxy.skew)) {
                         objekProxy.skew = nilaiSkew;
                         gsap.to(objekProxy, {
@@ -713,18 +716,20 @@
 
             gsap.set(".velocity-skew-img", { transformOrigin: "center center", force3D: true });
 
-            // B. EFEK OVERLAPPING STACKED CARDS (Panel menumpuk satu sama lain secara sinematik)
+            // B. EFEK OVERLAPPING STACKED CARDS (Disesuaikan khusus untuk rendering iOS / Safari)
             const kumpulanPanel = gsap.utils.toArray('.card-panel-stacked');
             kumpulanPanel.forEach((panel, indeks) => {
                 if (indeks < kumpulanPanel.length - 1) {
                     gsap.to(panel, {
                         scale: 0.92,
-                        opacity: 0.4,
+                        opacity: 0.3,
+                        y: "-4%", // Mencegah pemotongan area kontrol button pada Safari
                         scrollTrigger: {
                             trigger: panel,
-                            start: "top top+=100", 
+                            start: "top top+=80", 
                             end: "bottom top",
                             scrub: true,
+                            invalidateOnRefresh: true
                         }
                     });
                 }
@@ -760,12 +765,11 @@
                     pesanWhatsApp = `Halo, saya melihat karya "${judulBersih}" di katalog galeri Anda. Apakah unit ini tersedia untuk dikoleksi?`;
                 }
 
-                // PEMBUATAN STRUKTUR HTML KARTU UNTUK SEKSI ARSIP & LUKIS WAJAH (GRID LAYOUT)
                 const buildHtmlCardGrid = (contextType) => `
-                    <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis bg-slate-900" style="background-color: ${warnaCardGlobal}">
+                    <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis bg-slate-900 w-full" style="background-color: ${warnaCardGlobal}">
                         <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
                         
-                        <div onclick="bukaModalDetail(${lukisan.id}, '${contextType}')" class="cursor-pointer">
+                        <div onclick="bukaModalDetail(${lukisan.id}, '${contextType}')" class="cursor-pointer w-full">
                             <div class="relative overflow-hidden aspect-[4/3] bg-black/40 m-3 rounded-2xl border border-white/5">
                                 <img src="${urlGambarAset}" alt="${judulBersih}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out">
                                 <span class="absolute top-3 right-3 text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border backdrop-blur-md ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}">
@@ -773,8 +777,8 @@
                                 </span>
                             </div>
                             
-                            <div class="p-6 space-y-3 relative z-10">
-                                <div class="flex justify-between items-start gap-3">
+                            <div class="p-6 space-y-3 relative z-10 w-full">
+                                <div class="flex justify-between items-start gap-3 w-full">
                                     <h3 class="font-bold text-white text-base tracking-tight transition-colors duration-300 line-clamp-1 group-hover:text-dinamis-teks-aksen" style="--warna-hover-aksen: ${warnaAksenGlobal}">${lukisan.judul}</h3>
                                     <span class="text-[9px] text-slate-400 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-lg font-medium tracking-wide shrink-0">${lukisan.kategori || 'Seni'}</span>
                                 </div>
@@ -782,8 +786,8 @@
                             </div>
                         </div>
                         
-                        <div class="p-6 pt-0 mt-2 space-y-5 relative z-10">
-                            <div class="border-t border-white/5 pt-4 flex justify-between items-center">
+                        <div class="p-6 pt-0 mt-2 space-y-5 relative z-10 w-full">
+                            <div class="border-t border-white/5 pt-4 flex justify-between items-center w-full">
                                 <div>
                                     <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-semibold mb-0.5">Dimensi</span>
                                     <span class="text-xs text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
@@ -806,42 +810,46 @@
                     </div>
                 `;
 
-                // PEMBUATAN STRUKTUR OVERLAPPING STACKED PANELS UNTUK KOLEKSI UNGGULAN (IMERSIF LAYOUT)
+                // OPTIMALISASI RUANG PANEL STACKED (Menambahkan pb-20 & top-24 untuk Safari Mobile Viewport bug)
                 const buildHtmlCardStacked = () => `
-                    <div class="card-panel-stacked sticky top-28 w-full min-h-[60vh] md:min-h-[70vh] flex items-center justify-center border border-white/5 rounded-[32px] p-6 sm:p-12 mb-24 shadow-2xl overflow-hidden bg-slate-900" style="background-color: ${warnaCardGlobal}">
+                    <div class="card-panel-stacked sticky top-24 w-full min-h-[65vh] md:min-h-[70vh] flex items-center justify-center border border-white/5 rounded-[32px] p-5 sm:p-12 pb-20 sm:pb-12 mb-20 md:mb-24 shadow-2xl overflow-hidden bg-slate-900" style="background-color: ${warnaCardGlobal}">
                         <div class="absolute inset-0 bg-gradient-to-br ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center w-full relative z-10">
-                            <div onclick="bukaModalDetail(${lukisan.id}, 'featured')" class="w-full h-[35vh] md:h-[48vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl relative group cursor-pointer">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center w-full relative z-10">
+                            <div onclick="bukaModalDetail(${lukisan.id}, 'featured')" class="w-full h-[30vh] md:h-[48vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl relative group cursor-pointer">
                                 <img src="${urlGambarAset}" alt="${judulBersih}" class="velocity-skew-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                                 <span class="absolute top-4 right-4 text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border backdrop-blur-md ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}">
                                     • ${lukisan.status}
                                 </span>
                             </div>
                             
-                            <div class="space-y-4 sm:space-y-6 text-left">
-                                <span class="border px-3 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider bg-white/5 border-white/10" style="color: ${warnaAksenGlobal}">${lukisan.kategori || 'Seni'}</span>
-                                <h3 class="text-2xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight cursor-pointer" onclick="bukaModalDetail(${lukisan.id}, 'featured')">${lukisan.judul}</h3>
-                                <p class="text-slate-400 text-xs sm:text-sm leading-relaxed font-light line-clamp-3">${lukisan.deskripsi || 'Tidak ada deskripsi filosofi untuk karya ini.'}</p>
-                                
-                                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/5">
-                                    <div>
-                                        <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-semibold mb-0.5">Dimensi Fisik</span>
-                                        <span class="font-mono text-xs sm:text-sm font-bold text-slate-300">${lukisan.ukuran}</span>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="block text-[8px] uppercase tracking-widest font-semibold mb-0.5" style="color: ${warnaAksenGlobal}cc">Nilai Investasi</span>
-                                        <span class="font-mono text-base sm:text-xl font-black text-white">${formatRupiah(lukisan.harga)}</span>
-                                    </div>
+                            <div class="space-y-4 text-left flex flex-col justify-between h-full w-full">
+                                <div class="space-y-3 w-full">
+                                    <span class="border px-3 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider bg-white/5 border-white/10 inline-block" style="color: ${warnaAksenGlobal}">${lukisan.kategori || 'Seni'}</span>
+                                    <h3 class="text-xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight cursor-pointer line-clamp-1" onclick="bukaModalDetail(${lukisan.id}, 'featured')">${lukisan.judul}</h3>
+                                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed font-light line-clamp-2 md:line-clamp-3">${lukisan.deskripsi || 'Tidak ada deskripsi filosofi untuk karya ini.'}</p>
                                 </div>
                                 
-                                <div class="flex gap-2 w-full pt-2">
-                                    <button onclick="bukaModalDetail(${lukisan.id}, 'featured')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer bg-transparent text-slate-300 border-white/10 hover:bg-white/5 active:scale-[0.98]">
-                                        Tampilkan Detail
-                                    </button>
-                                    <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanWhatsApp}')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer shadow-md hover:shadow-xl active:scale-[0.98]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
-                                        Hubungi Kolektor
-                                    </button>
+                                <div class="w-full space-y-4">
+                                    <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-white/5 w-full">
+                                        <div>
+                                            <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-semibold mb-0.5">Dimensi Fisik</span>
+                                            <span class="font-mono text-xs sm:text-sm font-bold text-slate-300">${lukisan.ukuran}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="block text-[8px] uppercase tracking-widest font-semibold mb-0.5" style="color: ${warnaAksenGlobal}cc">Nilai Investasi</span>
+                                            <span class="font-mono text-base sm:text-xl font-black text-white">${formatRupiah(lukisan.harga)}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-2 w-full pt-1">
+                                        <button onclick="bukaModalDetail(${lukisan.id}, 'featured')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer bg-transparent text-slate-300 border-white/10 hover:bg-white/5 active:scale-[0.98]">
+                                            Tampilkan Detail
+                                        </button>
+                                        <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanWhatsApp}')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer shadow-md hover:shadow-xl active:scale-[0.98]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
+                                            Hubungi Kolektor
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -870,6 +878,7 @@
             // Jalankan inisialisasi animasi GSAP ScrollTrigger setelah elemen selesai dibuat di DOM
             if (adaKoleksiFeatured) {
                 aktifkanSistemAnimasiScrollImersif();
+                ScrollTrigger.refresh();
             } else {
                 wadahFeatured.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-10">Belum ada karya seni unggulan yang di-publish.</p>`;
             }
