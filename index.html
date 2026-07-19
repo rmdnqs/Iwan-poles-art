@@ -93,7 +93,7 @@
             
             <nav id="nav-container" class="flex flex-wrap gap-1 bg-slate-900/40 p-1 border border-white/5 backdrop-blur-md rounded-2xl text-xs w-full md:w-auto justify-center theme-transisi">
                 <button onclick="navigasiMenu('home', 'seksi-top')" id="btn-menu-home" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Unggulan</button>
-                <button onclick="navigasiMenu('home', 'seksi-lukis-wajah')" id="btn-menu-lukis-wajah" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Jasa Lukis Wajah</button>
+                <button onclick="navigasiMenu('lukis-wajah', '')" id="btn-menu-lukis-wajah" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Jasa Lukis Wajah</button>
                 <button onclick="navigasiMenu('katalog', '')" id="btn-menu-katalog" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Kategori Lukisan</button>
                 <button onclick="navigasiMenu('home', 'seksi-profil')" id="btn-menu-profil" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Profil Pelukis</button>
             </nav>
@@ -136,24 +136,6 @@
                 </div>
             </section>
 
-            <!-- SECTION BARU: JASA LUKIS WAJAH -->
-            <section id="seksi-lukis-wajah" class="space-y-10 scroll-mt-28 relative z-30">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
-                    <div class="flex items-center gap-3">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 dot-warna-tambahan"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500 dot-warna-tambahan"></span>
-                        </span>
-                        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-amber-500 text-dinamis-aksen">Layanan Sketsa & Jasa Lukis Wajah</h2>
-                    </div>
-                    <p class="text-xs text-slate-400 max-w-md font-light">Abadikan momen berharga atau beri hadiah premium berupa lukisan wajah eksklusif karya Maestro.</p>
-                </div>
-                
-                <div id="grid-lukis-wajah" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-                    <!-- Portofolio Lukis Wajah Ditulis Otomatis dari Supabase -->
-                </div>
-            </section>
-
             <!-- PROFIL SECTION -->
             <section id="seksi-profil" class="border-t border-white/5 pt-24 max-w-4xl mx-auto text-center space-y-10 scroll-mt-28 relative z-30">
                 <div class="relative inline-block mx-auto">
@@ -169,6 +151,11 @@
                 <p id="profil-narasi" class="text-xs sm:text-sm text-slate-400 font-light leading-relaxed max-w-2xl mx-auto text-center italic px-4">
                     "Seni adalah jembatan jiwa yang mengekspresikan apa yang tidak bisa diucapkan oleh kata-kata. Setiap goresan kuas di atas kanvas ini membawa pesan mendalam, menangkap harmoni warna, emosi manusia, serta keindahan alam yang abadi untuk dikurasi ke ruang hidup Anda."
                 </p>
+
+                <!-- KONTAINER MARKETPLACE PROFIL -->
+                <div id="profil-marketplace" class="flex flex-wrap justify-center gap-3 mt-4">
+                    <!-- Link dan Logo di-render dari script -->
+                </div>
 
                 <div class="pt-6 max-w-lg mx-auto grid grid-cols-3 gap-6 text-center text-xs px-4">
                     <div class="border border-white/5 p-5 rounded-2xl card-dinamis theme-transisi shadow-sm shadow-black/10">
@@ -188,6 +175,24 @@
         </div>
     </div>
 
+    <!-- TAB JASA LUKIS WAJAH (MENU BARU KHUSUS) -->
+    <div id="tab-lukis-wajah" class="tab-content max-w-7xl mx-auto px-4 sm:px-8 py-16 space-y-12 relative z-30">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-8">
+            <div class="flex items-center gap-3">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 dot-warna-tambahan"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500 dot-warna-tambahan"></span>
+                </span>
+                <h2 class="text-sm font-bold uppercase tracking-[0.2em] text-amber-500 text-dinamis-aksen">Portofolio Jasa Lukis Wajah</h2>
+            </div>
+            <p class="text-xs text-slate-400 max-w-md font-light md:text-right">Koleksi khusus lukisan wajah. Abadikan momen berharga atau beri hadiah premium dengan karya eksklusif Maestro.</p>
+        </div>
+        
+        <div id="grid-lukis-wajah" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+            <!-- Portofolio Lukis Wajah Ditulis Otomatis dari Supabase Berdasarkan Kategori -->
+        </div>
+    </div>
+
     <!-- TAB KATALOG -->
     <div id="tab-katalog" class="tab-content max-w-7xl mx-auto px-4 sm:px-8 py-16 space-y-12 relative z-30">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/5 pb-8">
@@ -202,7 +207,8 @@
             </div>
         </div>
 
-        <div id="grid-archive" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        <!-- grid-archive dipertahankan lg:grid-cols-3 -->
+        <div id="grid-archive" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
             <!-- Ditulis Otomatis dari Supabase -->
         </div>
     </div>
@@ -224,7 +230,7 @@
                         <span id="modal-kategori" class="text-[9px] text-slate-400 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-lg font-medium tracking-wide">Kategori</span>
                         <span id="modal-status" class="text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border">Status</span>
                     </div>
-                    <h3 id="modal-judul" class="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">Judul Lukisan</h3>
+                    <h3 id="modal-judul" class="text-lg sm:text-xl font-black text-white tracking-tight uppercase">Judul Lukisan</h3>
                     <div class="border-t border-white/5 pt-3">
                         <h4 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Deskripsi Narasi</h4>
                         <p id="modal-deskripsi" class="text-xs text-slate-300 font-light leading-relaxed max-h-[150px] overflow-y-auto pr-1">Narasi deskripsi lengkap lukisan...</p>
@@ -243,7 +249,7 @@
                         </div>
                     </div>
                     <button id="modal-btn-wa" class="block w-full text-center text-xs font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-widest cursor-pointer shadow-md hover:shadow-xl active:scale-[0.99]">
-                        Hubungi Kolektor
+                        Hubungi Pelukis
                     </button>
                 </div>
             </div>
@@ -252,10 +258,14 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER DENGAN MARKETPLACE -->
     <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-30">
-        <footer class="py-12 mt-20 border-t border-white/5 text-center text-[11px] text-slate-500 tracking-widest font-light uppercase">
-            <p>© 2026 Iwan Poles ART Galeri.</p>
+        <footer class="py-12 mt-20 border-t border-white/5 text-center flex flex-col items-center gap-6">
+            <!-- KONTAINER MARKETPLACE FOOTER -->
+            <div id="footer-marketplace" class="flex flex-wrap justify-center gap-4 items-center">
+                <!-- Di-render dari JS -->
+            </div>
+            <p class="text-[11px] text-slate-500 tracking-widest font-light uppercase">© 2026 Iwan Poles ART Galeri.</p>
         </footer>
     </div>
 
@@ -351,13 +361,13 @@
             let pesanWA = "";
             const judulBersih = lukisan.judul.replace(/['"]/g, '');
             if(tipeContext === 'featured') {
-                btnWA.innerText = "Hubungi Kolektor";
+                btnWA.innerText = "Hubungi Pelukis";
                 pesanWA = `Halo, saya tertarik dengan lukisan ${judulBersih} seharga ${formatRupiah(lukisan.harga)} di Koleksi Unggulan. Apakah masih tersedia?`;
             } else if(tipeContext === 'lukis-wajah') {
-                btnWA.innerText = "Hubungi Kolektor";
+                btnWA.innerText = "Hubungi Maestro";
                 pesanWA = `Halo Maestro, saya ingin memesan Jasa Lukis Wajah seperti portofolio "${judulBersih}". Bagaimana alur pemesanannya?`;
             } else {
-                btnWA.innerText = "Hubungi Kolektor";
+                btnWA.innerText = "Hubungi Pelukis";
                 pesanWA = `Halo, saya melihat karya "${judulBersih}" di katalog. Apakah unit ini tersedia untuk dikoleksi?`;
             }
             btnWA.onclick = () => jalankanKlikWhatsApp(nomorWhatsAppGlobal, pesanWA);
@@ -454,12 +464,13 @@
                 activeTabButton.style.color = aksen;
                 activeTabButton.style.backgroundColor = `${bgCard}`;
             } else {
-                let currentTab = document.getElementById("tab-home").classList.contains("active") ? "home" : "katalog";
+                let currentTab = "home";
+                if (document.getElementById("tab-katalog").classList.contains("active")) currentTab = "katalog";
+                if (document.getElementById("tab-lukis-wajah").classList.contains("active")) currentTab = "lukis-wajah";
+                
                 let currentAnchor = "";
                 if (document.getElementById("seksi-profil").getBoundingClientRect().top < window.innerHeight) {
                     currentAnchor = "seksi-profil";
-                } else if (document.getElementById("seksi-lukis-wajah").getBoundingClientRect().top < window.innerHeight) {
-                    currentAnchor = "seksi-lukis-wajah";
                 }
                 navigasiMenu(currentTab, currentAnchor);
             }
@@ -481,7 +492,7 @@
             let tombolAktif;
             if (targetId === 'seksi-profil') {
                 tombolAktif = document.getElementById('btn-menu-profil');
-            } else if (targetId === 'seksi-lukis-wajah') {
+            } else if (tabName === 'lukis-wajah') {
                 tombolAktif = document.getElementById('btn-menu-lukis-wajah');
             } else if (tabName === 'katalog') {
                 tombolAktif = document.getElementById('btn-menu-katalog');
@@ -507,6 +518,8 @@
                     const elemenTarget = document.getElementById(targetId);
                     if (elemenTarget) elemenTarget.scrollIntoView({ behavior: 'smooth' });
                 }, 50);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
@@ -542,16 +555,13 @@
         async function sinkronisasiTabKategoriDinamis() {
             try {
                 const containerFilter = document.getElementById("filter-container");
-                // Reset tab filter, biarkan tombol 'Semua Karya' tetap ada sebagai default awal
                 containerFilter.innerHTML = `<button id="btn-filter-Semua" onclick="gantiKategoriFilter('Semua')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Semua Karya</button>`;
                 
-                // Fetch list kategori langsung dari database cloud
                 let { data: listKategori, error } = await dbCloud.from('kategori').select('*');
                 if (error) throw error;
 
                 if (listKategori && listKategori.length > 0) {
                     listKategori.forEach(kat => {
-                        // Fail-safe toleransi skema nama kolom database
                         const namaBersihKat = (kat.nama_kategori || kat.nama || "").trim();
                         if (namaBersihKat) {
                             const htmlTabBaru = `
@@ -563,7 +573,6 @@
                 }
             } catch(err) {
                 console.warn("Gagal sinkronisasi menu tab kategori dinamis, menggunakan backup default:", err.message);
-                // Fail-safe lokal jika koneksi tabel kategori terkendala
                 const containerFilter = document.getElementById("filter-container");
                 containerFilter.innerHTML = `
                     <button id="btn-filter-Semua" onclick="gantiKategoriFilter('Semua')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Semua Karya</button>
@@ -571,6 +580,48 @@
                     <button id="btn-filter-Realisme" onclick="gantiKategoriFilter('Realisme')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Realisme</button>
                     <button id="btn-filter-Lanskap" onclick="gantiKategoriFilter('Lanskap')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Lanskap</button>
                 `;
+            }
+        }
+
+        // ==========================================
+        // 🏷️ FUNGSI RENDER LOGO MARKETPLACE
+        // ==========================================
+        function renderMarketplaceDanSosmed(config) {
+            const wadahProfil = document.getElementById("profil-marketplace");
+            const wadahFooter = document.getElementById("footer-marketplace");
+            if(!wadahProfil || !wadahFooter) return;
+
+            wadahProfil.innerHTML = "";
+            wadahFooter.innerHTML = "";
+
+            // Kamus data logo umum yang sering dipakai
+            const platformTersedia = [
+                { key: 'link_shopee', name: 'Shopee', icon: 'https://img.icons8.com/ios-filled/50/ffffff/shopee.png' },
+                { key: 'link_tokopedia', name: 'Tokopedia', icon: 'https://img.icons8.com/ios-filled/50/ffffff/online-store.png' }, // Menggunakan icon generic store jika tidak ada
+                { key: 'link_instagram', name: 'Instagram', icon: 'https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png' },
+                { key: 'link_tiktok', name: 'TikTok', icon: 'https://img.icons8.com/ios-filled/50/ffffff/tiktok.png' },
+                { key: 'link_facebook', name: 'Facebook', icon: 'https://img.icons8.com/ios-filled/50/ffffff/facebook-new.png' }
+            ];
+
+            let adaData = false;
+
+            platformTersedia.forEach(platform => {
+                if (config[platform.key]) {
+                    adaData = true;
+                    // HTML untuk Icon
+                    const htmlElement = `
+                        <a href="${config[platform.key]}" target="_blank" rel="noopener noreferrer" title="Kunjungi ${platform.name}" class="w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 shadow-md group p-2.5 cursor-pointer card-dinamis hover:scale-110" style="background-color: ${warnaCardGlobal}; border-color: rgba(255,255,255,0.1);">
+                            <img src="${platform.icon}" alt="Logo ${platform.name}" class="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300" style="filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));" />
+                        </a>
+                    `;
+                    wadahProfil.insertAdjacentHTML('beforeend', htmlElement);
+                    wadahFooter.insertAdjacentHTML('beforeend', htmlElement);
+                }
+            });
+
+            if(!adaData) {
+                wadahProfil.style.display = "none";
+                wadahFooter.style.display = "none";
             }
         }
 
@@ -617,6 +668,9 @@
                         config.warna_aksen || "#f59e0b",
                         config.warna_teks_utama || "#f8fafc"
                     );
+
+                    // Panggil fungsi render marketplace setelah tema di-apply
+                    renderMarketplaceDanSosmed(config);
                 }
 
                 let { data: lukisanList, error: lukisanError } = await dbCloud.from('lukisan').select('*').order('created_at', { ascending: false });
@@ -806,9 +860,13 @@
                 const cocokSearch = lukisan.judul.toLowerCase().includes(kataKunci);
                 const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
                 const judulBersih = lukisan.judul.replace(/['"]/g, '');
+                
+                // SISTEM BARU: Cek dari string nama kategori hasil inputan CMS
+                const namaKategori = (lukisan.kategori || '').toLowerCase().trim();
+                const isKategoriWajah = (namaKategori === 'lukis wajah') || (lukisan.is_lukis_wajah === true);
 
                 let pesanWhatsApp = "";
-                if(lukisan.is_lukis_wajah === true) {
+                if(isKategoriWajah) {
                     pesanWhatsApp = `Halo Maestro, saya ingin memesan Jasa Lukis Wajah berdasarkan portofolio "${judulBersih}". Bagaimana alur pemesanannya?`;
                 } else if(lukisan.is_featured === true) {
                     pesanWhatsApp = `Halo, saya tertarik dengan lukisan Unggulan "${judulBersih}" seharga ${formatRupiah(lukisan.harga)}. Apakah unit masih tersedia?`;
@@ -830,7 +888,7 @@
                             
                             <div class="p-6 space-y-3 relative z-10 w-full">
                                 <div class="flex justify-between items-start gap-3 w-full">
-                                    <h3 class="font-bold text-white text-base tracking-tight transition-colors duration-300 line-clamp-1 group-hover:text-dinamis-teks-aksen" style="--warna-hover-aksen: ${warnaAksenGlobal}">${lukisan.judul}</h3>
+                                    <h3 class="font-bold text-white text-sm tracking-tight transition-colors duration-300 line-clamp-2 group-hover:text-dinamis-teks-aksen" style="--warna-hover-aksen: ${warnaAksenGlobal}">${lukisan.judul}</h3>
                                     <span class="text-[9px] text-slate-400 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-lg font-medium tracking-wide shrink-0">${lukisan.kategori || 'Seni'}</span>
                                 </div>
                                 <p class="text-xs text-slate-400 line-clamp-2 font-light leading-relaxed h-8">${lukisan.deskripsi || 'Tidak ada deskripsi narasi untuk karya seni ini.'}</p>
@@ -844,7 +902,7 @@
                                     <span class="text-xs text-slate-300 font-mono font-medium">${lukisan.ukuran}</span>
                                 </div>
                                 <div class="text-right">
-                                    <span class="block text-[8px] uppercase tracking-widest font-semibold mb-0.5" style="color: ${warnaAksenGlobal}cc">Estimasi Jasa</span>
+                                    <span class="block text-[8px] uppercase tracking-widest font-semibold mb-0.5" style="color: ${warnaAksenGlobal}cc">Harga</span>
                                     <span class="text-base font-black text-white font-mono tracking-tight">${formatRupiah(lukisan.harga)}</span>
                                 </div>
                             </div>
@@ -854,7 +912,7 @@
                                     Tampilkan Detail
                                 </button>
                                 <button id="btn-wa-grid-${contextType}-${lukisan.id}" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer shadow-md hover:shadow-xl active:scale-[0.98]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
-                                    Hubungi Kolektor
+                                    Hubungi Pelukis
                                 </button>
                             </div>
                         </div>
@@ -876,7 +934,7 @@
                             <div class="space-y-4 text-left flex flex-col justify-between h-full w-full">
                                 <div class="space-y-3 w-full">
                                     <span class="border px-3 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider bg-white/5 border-white/10 inline-block" style="color: ${warnaAksenGlobal}">${lukisan.kategori || 'Seni'}</span>
-                                    <h3 class="text-xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight cursor-pointer line-clamp-1" onclick="bukaModalDetail(${lukisan.id}, 'featured')">${lukisan.judul}</h3>
+                                    <h3 class="text-lg sm:text-2xl md:text-3xl font-black text-white uppercase tracking-tight leading-tight cursor-pointer line-clamp-3" onclick="bukaModalDetail(${lukisan.id}, 'featured')">${lukisan.judul}</h3>
                                     <p class="text-slate-400 text-xs sm:text-sm leading-relaxed font-light line-clamp-2 md:line-clamp-3">${lukisan.deskripsi || 'Tidak ada deskripsi filosofi untuk karya ini.'}</p>
                                 </div>
                                 
@@ -897,7 +955,7 @@
                                             Tampilkan Detail
                                         </button>
                                         <button id="btn-wa-stacked-${lukisan.id}" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer shadow-md hover:shadow-xl active:scale-[0.98]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
-                                            Hubungi Kolektor
+                                            Hubungi Pelukis
                                         </button>
                                     </div>
                                 </div>
@@ -906,13 +964,14 @@
                     </div>
                 `;
 
+                // Logika Filter
                 if (lukisan.is_featured === true) {
                     adaKoleksiFeatured = true;
                     wadahFeatured.insertAdjacentHTML('beforeend', buildHtmlCardStacked());
                     featuredBindings.push({ id: `btn-wa-stacked-${lukisan.id}`, text: pesanWhatsApp });
                 }
                 
-                if (lukisan.is_lukis_wajah === true) {
+                if (isKategoriWajah) {
                     adaLukisWajah = true;
                     wadahLukisWajah.insertAdjacentHTML('beforeend', buildHtmlCardGrid("lukis-wajah"));
                     gridBindings.push({ id: `btn-wa-grid-lukis-wajah-${lukisan.id}`, text: pesanWhatsApp });
@@ -951,19 +1010,12 @@
                 wadahFeatured.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-10">Belum ada karya seni unggulan yang di-publish.</p>`;
             }
 
-            if(!adaKatalogCocok){
-                wadahArchive.innerHTML = `<p class="text-xs text-slate-500 italic text-center col-span-full py-10">Tidak ada karya seni yang cocok dengan kategori "${kategoriAktif}" atau kata kunci pencarian.</p>`;
+            if (!adaLukisWajah) {
+                wadahLukisWajah.innerHTML = `<p class="text-xs text-slate-500 italic text-center col-span-full py-10">Belum ada portofolio lukis wajah. Silakan tambahkan karya dengan kategori "Lukis Wajah" melalui CMS.</p>`;
             }
 
-            const seksiLukisWajah = document.getElementById("seksi-lukis-wajah");
-            const btnMenuLukisWajah = document.getElementById("btn-menu-lukis-wajah");
-            if (!adaLukisWajah) {
-                seksiLukisWajah.style.display = "none";
-                btnMenuLukisWajah.style.display = "none";
-                wadahLukisWajah.innerHTML = `<p class="text-xs text-slate-500 italic text-center col-span-full">Belum ada portofolio lukis wajah yang di-publish.</p>`;
-            } else {
-                seksiLukisWajah.style.display = "block";
-                btnMenuLukisWajah.style.display = "block";
+            if(!adaKatalogCocok){
+                wadahArchive.innerHTML = `<p class="text-xs text-slate-500 italic text-center col-span-full py-10">Tidak ada karya seni yang cocok dengan kategori "${kategoriAktif}" atau kata kunci pencarian.</p>`;
             }
 
             let styleHoverExist = document.getElementById("style-hover-klien");
