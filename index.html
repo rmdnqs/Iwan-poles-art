@@ -81,7 +81,7 @@
             transform: scale(1.5);
         }
 
-        /* Struktur CSS Khusus untuk Overlapping Stacked Panels - Dioptimalkan untuk Safari iOS */
+        /* Struktur CSS Khusus untuk Overlapping Stacked Panels - iOS/Safari Optimized */
         .card-panel-stacked {
             position: relative;
             z-index: 1;
@@ -686,13 +686,16 @@
                     btn.style.boxShadow = `0 4px 14px ${warnaAksenGlobal}33`;
                 }
             });
-            filterSemualKonten();
+            filterSemuaKonten();
         }
 
         // ==========================================
-        // MANAJEMEN ANIMASI VELOCITY & OVERLAPPING (SAFARI FIX)
+        // MANAJEMEN ANIMASI VELOCITY & OVERLAPPING (iOS/SAFARI FIX)
         // ==========================================
         function aktifkanSistemAnimasiScrollImersif() {
+            // Hapus instance ScrollTrigger lama untuk menghindari memory leaks & bentrokan koordinat
+            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
             // A. EFEK VELOCITY SKEW
             let objekProxy = { skew: 0 },
                 skalarSkewSetter = gsap.quickSetter(".velocity-skew-img", "skewY", "deg"),
@@ -716,14 +719,14 @@
 
             gsap.set(".velocity-skew-img", { transformOrigin: "center center", force3D: true });
 
-            // B. EFEK OVERLAPPING STACKED CARDS (Disesuaikan khusus untuk rendering iOS / Safari)
+            // B. EFEK OVERLAPPING STACKED CARDS (Disesuaikan khusus untuk rendering iOS / Safari Mobile viewport)
             const kumpulanPanel = gsap.utils.toArray('.card-panel-stacked');
             kumpulanPanel.forEach((panel, indeks) => {
                 if (indeks < kumpulanPanel.length - 1) {
                     gsap.to(panel, {
                         scale: 0.92,
                         opacity: 0.3,
-                        y: "-4%", // Mencegah pemotongan area kontrol button pada Safari
+                        y: "-4%", // Margin offset pengaman penumpukan atas agar tombol tidak terhimpit
                         scrollTrigger: {
                             trigger: panel,
                             start: "top top+=80", 
@@ -734,6 +737,11 @@
                     });
                 }
             });
+
+            // Rekalkulasi dimensi tinggi halaman setelah seluruh animasi didaftarkan
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 300);
         }
 
         function filterSemuaKonten() {
@@ -765,6 +773,7 @@
                     pesanWhatsApp = `Halo, saya melihat karya "${judulBersih}" di katalog galeri Anda. Apakah unit ini tersedia untuk dikoleksi?`;
                 }
 
+                // PEMBUATAN STRUKTUR HTML KARTU UNTUK SEKSI ARSIP & LUKIS WAJAH (GRID LAYOUT)
                 const buildHtmlCardGrid = (contextType) => `
                     <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis bg-slate-900 w-full" style="background-color: ${warnaCardGlobal}">
                         <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
@@ -810,7 +819,7 @@
                     </div>
                 `;
 
-                // OPTIMALISASI RUANG PANEL STACKED (Menambahkan pb-20 & top-24 untuk Safari Mobile Viewport bug)
+                // PEMBUATAN STRUKTUR OVERLAPPING STACKED PANELS UNTUK KOLEKSI UNGGULAN (DENGAN SAFE PADDING-BOTTOM UNTUK SAFARI MOBILE)
                 const buildHtmlCardStacked = () => `
                     <div class="card-panel-stacked sticky top-24 w-full min-h-[65vh] md:min-h-[70vh] flex items-center justify-center border border-white/5 rounded-[32px] p-5 sm:p-12 pb-20 sm:pb-12 mb-20 md:mb-24 shadow-2xl overflow-hidden bg-slate-900" style="background-color: ${warnaCardGlobal}">
                         <div class="absolute inset-0 bg-gradient-to-br ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
@@ -878,7 +887,6 @@
             // Jalankan inisialisasi animasi GSAP ScrollTrigger setelah elemen selesai dibuat di DOM
             if (adaKoleksiFeatured) {
                 aktifkanSistemAnimasiScrollImersif();
-                ScrollTrigger.refresh();
             } else {
                 wadahFeatured.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-10">Belum ada karya seni unggulan yang di-publish.</p>`;
             }
