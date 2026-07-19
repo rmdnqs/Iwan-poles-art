@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         
         /* --- ANIMASI CAROUSEL INTERAKTIF DENGAN KEYFRAMES --- */
         .slide-fade { 
@@ -80,6 +80,12 @@
         .zoom-container:hover img {
             transform: scale(1.5);
         }
+
+        /* Struktur CSS Khusus untuk Overlapping Stacked Panels */
+        .card-panel-stacked {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body id="body-klien" class="bg-slate-950 text-slate-100 min-h-screen transition-all duration-500 antialiased selection:bg-amber-500 selection:text-slate-950">
@@ -119,10 +125,11 @@
             </div>
         </section>
 
+        <!-- AREA SEKSI KONTEN UTAMA DENGAN WRAPPER UNTUK MENGAKOMODASI PROPERTI STICKY OVERLAPPING -->
         <div class="max-w-7xl mx-auto px-4 sm:px-8 py-20 space-y-32">
             
-            <!-- FEATURED SECTION -->
-            <section class="space-y-10">
+            <!-- FEATURED SECTION (Koleksi Unggulan Diubah Menjadi Tata Letak Dinamis Stacked Cards) -->
+            <section class="space-y-10 relative">
                 <div class="flex items-center gap-3 border-b border-white/5 pb-4">
                     <span class="relative flex h-2 w-2">
                         <span id="ping-warna" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -130,13 +137,14 @@
                     </span>
                     <h2 id="text-header-featured" class="text-xs font-bold uppercase tracking-[0.2em] text-amber-500 text-dinamis-aksen">Koleksi Mahakarya Unggulan</h2>
                 </div>
-                <div id="grid-featured" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+                <!-- Kontainer di bawah ini diisi dinamis dengan susunan elemen bertingkat (Sticky Stacked Cards) -->
+                <div id="grid-featured" class="space-y-0 w-full flex flex-col items-center">
                     <!-- Ditulis Otomatis dari Supabase -->
                 </div>
             </section>
 
             <!-- SECTION BARU: JASA LUKIS WAJAH -->
-            <section id="seksi-lukis-wajah" class="space-y-10 scroll-mt-28">
+            <section id="seksi-lukis-wajah" class="space-y-10 scroll-mt-28 relative z-30">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
                     <div class="flex items-center gap-3">
                         <span class="relative flex h-2 w-2">
@@ -154,7 +162,7 @@
             </section>
 
             <!-- PROFIL SECTION -->
-            <section id="seksi-profil" class="border-t border-white/5 pt-24 max-w-4xl mx-auto text-center space-y-10 scroll-mt-28">
+            <section id="seksi-profil" class="border-t border-white/5 pt-24 max-w-4xl mx-auto text-center space-y-10 scroll-mt-28 relative z-30">
                 <div class="relative inline-block mx-auto">
                     <div id="blur-profil" class="absolute inset-0 bg-amber-500/5 blur-3xl rounded-full scale-150"></div>
                     <img id="profil-foto-pelukis" src="https://placehold.co/200" alt="Foto Pelukis" class="relative w-40 h-40 object-cover rounded-full mx-auto border border-white/10 p-2 bg-slate-900/50 shadow-2xl shadow-black/50 card-dinamis">
@@ -188,7 +196,7 @@
     </div>
 
     <!-- TAB KATALOG -->
-    <div id="tab-katalog" class="tab-content max-w-7xl mx-auto px-4 sm:px-8 py-16 space-y-12">
+    <div id="tab-katalog" class="tab-content max-w-7xl mx-auto px-4 sm:px-8 py-16 space-y-12 relative z-30">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/5 pb-8">
             <div id="filter-container" class="flex flex-wrap gap-1.5 bg-slate-900/40 p-1.5 border border-white/5 rounded-2xl text-xs theme-transisi backdrop-blur-md">
                 <button id="btn-filter-Semua" onclick="gantiKategoriFilter('Semua')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Semua Karya</button>
@@ -254,18 +262,23 @@
     </div>
 
     <!-- FOOTER -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-30">
         <footer class="py-12 mt-20 border-t border-white/5 text-center text-[11px] text-slate-500 tracking-widest font-light uppercase">
             <p>© 2026 Iwan Poles ART Galeri.</p>
         </footer>
     </div>
 
+    <!-- THIRD-PARTY LIBRARIES UNTUK ANIMASI PREMIUM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script>
         const dbCloud = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
         let masterDataLukisan = [];
-        let nomorWhatsAppGlobal = "6281234567890"; // Fallback default
+        let nomorWhatsAppGlobal = "6281234567890"; 
         let kategoriAktif = "Semua";
         
         let warnaBgGlobal = "#0f172a"; 
@@ -275,6 +288,7 @@
         
         let indeksSlideSaatIni = 0;
         let intervalTimerSlide;
+        let lenisSmoothScroll;
 
         function formatRupiah(angka) {
             return 'Rp ' + parseFloat(angka).toLocaleString('id-ID');
@@ -308,7 +322,6 @@
             window.open(urlWA, '_blank');
         }
 
-        // FUNGSI UNTUK MODAL DETAIL & ACTION BINDING
         function bukaModalDetail(idLukisan, tipeContext) {
             const lukisan = masterDataLukisan.find(item => item.id == idLukisan);
             if(!lukisan) return;
@@ -317,14 +330,12 @@
             const innerModal = document.getElementById("inner-modal-detail");
             const paneInfo = document.getElementById("modal-info-pane");
             
-            // Terapkan Tema Warna Dinamis Klien ke Elemen Modal
             innerModal.style.backgroundColor = warnaCardGlobal;
             paneInfo.style.backgroundColor = warnaCardGlobal;
             document.getElementById("modal-judul").style.color = warnaTeksGlobal;
             document.getElementById("modal-kategori").style.borderColor = "rgba(255,255,255,0.1)";
             document.getElementById("modal-label-harga").style.color = `${warnaAksenGlobal}cc`;
 
-            // Suntik Data Gambar & Teks
             document.getElementById("modal-img").style.transform = "scale(1)";
             document.getElementById("modal-img").src = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
             document.getElementById("modal-judul").innerText = lukisan.judul;
@@ -333,7 +344,6 @@
             document.getElementById("modal-harga").innerText = formatRupiah(lukisan.harga);
             document.getElementById("modal-deskripsi").innerText = lukisan.deskripsi || 'Tidak ada deskripsi narasi untuk karya seni ini.';
 
-            // Status Badge
             const statusBadge = document.getElementById("modal-status");
             statusBadge.innerText = `• ${lukisan.status}`;
             if(lukisan.status === 'Tersedia') {
@@ -342,7 +352,6 @@
                 statusBadge.className = "text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border bg-red-500/10 border-red-500/20 text-red-400";
             }
 
-            // Atur Trigger Pesan WA
             const btnWA = document.getElementById("modal-btn-wa");
             btnWA.style.backgroundColor = warnaAksenGlobal;
             btnWA.style.borderColor = warnaAksenGlobal;
@@ -362,7 +371,6 @@
             }
             btnWA.onclick = () => jalankanKlikWhatsApp(nomorWhatsAppGlobal, pesanWA);
 
-            // Buka dengan Efek Fade In
             modal.classList.remove("hidden");
             modal.classList.add("flex");
             setTimeout(() => {
@@ -381,12 +389,10 @@
             }, 300);
         }
 
-        // LOGIKA LIVE MAGNIFY PREVIEW ZOOM
         function efekKursorZoom(e) {
             const wadahZoom = e.currentTarget;
             const gambar = wadahZoom.querySelector("img");
             
-            // Hitung persentase posisi mouse terhadap container gambar
             const rect = wadahZoom.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -502,8 +508,35 @@
             }
         }
 
+        // ==========================================
+        // INITIALIZE LENIS SMOOTH SCROLL & GSAP
+        // ==========================================
+        function initSmoothScrollingEngine() {
+            lenisSmoothScroll = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                direction: 'vertical',
+                gestureDirection: 'vertical',
+                smooth: true,
+                mouseMultiplier: 1,
+                smoothTouch: false,
+                touchMultiplier: 2,
+                infinite: false,
+            });
+
+            function updateScrollFrame(time) {
+                lenisSmoothScroll.raf(time);
+                requestAnimationFrame(updateScrollFrame);
+            }
+            requestAnimationFrame(updateScrollFrame);
+
+            lenisSmoothScroll.on('scroll', ScrollTrigger.update);
+            gsap.registerPlugin(ScrollTrigger);
+        }
+
         async function initAplikasiKlien() {
             try {
+                initSmoothScrollingEngine();
                 await catatPengunjungBaru();
 
                 let { data: config, error: configError } = await dbCloud.from('konfigurasi_web').select('*').eq('id', 1).single();
@@ -653,6 +686,51 @@
             filterSemuaKonten();
         }
 
+        // ==========================================
+        // MANAJEMEN ANIMASI VELOCITY & OVERLAPPING
+        // ==========================================
+        function aktifkanSistemAnimasiScrollImersif() {
+            // A. EFEK VELOCITY SKEW (Gambar akan sedikit memiring jika di-scroll secara akseleratif)
+            let objekProxy = { skew: 0 },
+                skalarSkewSetter = gsap.quickSetter(".velocity-skew-img", "skewY", "deg"),
+                pembatasNilai = gsap.utils.clamp(-7, 7); 
+
+            ScrollTrigger.create({
+                onUpdate: (self) => {
+                    let nilaiSkew = pembatasNilai(self.getVelocity() / -350);
+                    if (Math.abs(nilaiSkew) > Math.abs(objekProxy.skew)) {
+                        objekProxy.skew = nilaiSkew;
+                        gsap.to(objekProxy, {
+                            skew: 0,
+                            duration: 0.8,
+                            ease: "power3",
+                            overwrite: "auto",
+                            onUpdate: () => skalarSkewSetter(objekProxy.skew)
+                        });
+                    }
+                }
+            });
+
+            gsap.set(".velocity-skew-img", { transformOrigin: "center center", force3D: true });
+
+            // B. EFEK OVERLAPPING STACKED CARDS (Panel menumpuk satu sama lain secara sinematik)
+            const kumpulanPanel = gsap.utils.toArray('.card-panel-stacked');
+            kumpulanPanel.forEach((panel, indeks) => {
+                if (indeks < kumpulanPanel.length - 1) {
+                    gsap.to(panel, {
+                        scale: 0.92,
+                        opacity: 0.4,
+                        scrollTrigger: {
+                            trigger: panel,
+                            start: "top top+=100", 
+                            end: "bottom top",
+                            scrub: true,
+                        }
+                    });
+                }
+            });
+        }
+
         function filterSemuaKonten() {
             const kataKunci = document.getElementById("search-katalog").value.toLowerCase();
             const wadahFeatured = document.getElementById("grid-featured");
@@ -665,6 +743,7 @@
 
             let adaLukisWajah = false;
             let adaKatalogCocok = false;
+            let adaKoleksiFeatured = false;
 
             masterDataLukisan.forEach(lukisan => {
                 const cocokKategori = (kategoriAktif === "Semua" || lukisan.kategori === kategoriAktif);
@@ -672,7 +751,6 @@
                 const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
                 const judulBersih = lukisan.judul.replace(/['"]/g, '');
 
-                // SUNTIK TEKS PESAN WHATSAPP YANG DINAMIS BERDASARKAN KONTEKS KATEGORI
                 let pesanWhatsApp = "";
                 if(lukisan.is_lukis_wajah === true) {
                     pesanWhatsApp = `Halo Maestro, saya ingin memesan Jasa Lukis Wajah berdasarkan portofolio "${judulBersih}". Bagaimana alur pemesanannya?`;
@@ -682,11 +760,11 @@
                     pesanWhatsApp = `Halo, saya melihat karya "${judulBersih}" di katalog galeri Anda. Apakah unit ini tersedia untuk dikoleksi?`;
                 }
 
-                const buildHtmlCard = (contextType) => `
+                // PEMBUATAN STRUKTUR HTML KARTU UNTUK SEKSI ARSIP & LUKIS WAJAH (GRID LAYOUT)
+                const buildHtmlCardGrid = (contextType) => `
                     <div class="group border border-white/5 rounded-3xl overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 transition-all duration-500 relative flex flex-col justify-between card-dinamis bg-slate-900" style="background-color: ${warnaCardGlobal}">
                         <div class="absolute inset-0 bg-gradient-to-b ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
                         
-                        <!-- Area Gambar & Info yang Bisa Diklik untuk Detail -->
                         <div onclick="bukaModalDetail(${lukisan.id}, '${contextType}')" class="cursor-pointer">
                             <div class="relative overflow-hidden aspect-[4/3] bg-black/40 m-3 rounded-2xl border border-white/5">
                                 <img src="${urlGambarAset}" alt="${judulBersih}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out">
@@ -704,7 +782,6 @@
                             </div>
                         </div>
                         
-                        <!-- Bagian Bawah Card: Informasi Dimensi & Dua Tombol Berdampingan -->
                         <div class="p-6 pt-0 mt-2 space-y-5 relative z-10">
                             <div class="border-t border-white/5 pt-4 flex justify-between items-center">
                                 <div>
@@ -717,7 +794,6 @@
                                 </div>
                             </div>
                             
-                            <!-- OPERASIONAL 2 TOMBOL PARALEL BERDAMPINGAN -->
                             <div class="flex gap-2 w-full">
                                 <button onclick="bukaModalDetail(${lukisan.id}, '${contextType}')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer bg-transparent text-slate-300 border-white/10 hover:bg-white/5 active:scale-[0.98]">
                                     Tampilkan Detail
@@ -730,30 +806,78 @@
                     </div>
                 `;
 
-                // 1. Kondisi Render ke Section Featured
+                // PEMBUATAN STRUKTUR OVERLAPPING STACKED PANELS UNTUK KOLEKSI UNGGULAN (IMERSIF LAYOUT)
+                const buildHtmlCardStacked = () => `
+                    <div class="card-panel-stacked sticky top-28 w-full min-h-[60vh] md:min-h-[70vh] flex items-center justify-center border border-white/5 rounded-[32px] p-6 sm:p-12 mb-24 shadow-2xl overflow-hidden bg-slate-900" style="background-color: ${warnaCardGlobal}">
+                        <div class="absolute inset-0 bg-gradient-to-br ${lukisan.gradient || 'from-white/5 to-transparent'} opacity-20 pointer-events-none"></div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center w-full relative z-10">
+                            <div onclick="bukaModalDetail(${lukisan.id}, 'featured')" class="w-full h-[35vh] md:h-[48vh] rounded-2xl overflow-hidden border border-white/10 shadow-2xl relative group cursor-pointer">
+                                <img src="${urlGambarAset}" alt="${judulBersih}" class="velocity-skew-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <span class="absolute top-4 right-4 text-[9px] uppercase font-mono font-bold tracking-widest px-3 py-1 rounded-full border backdrop-blur-md ${lukisan.status === 'Tersedia' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}">
+                                    • ${lukisan.status}
+                                </span>
+                            </div>
+                            
+                            <div class="space-y-4 sm:space-y-6 text-left">
+                                <span class="border px-3 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider bg-white/5 border-white/10" style="color: ${warnaAksenGlobal}">${lukisan.kategori || 'Seni'}</span>
+                                <h3 class="text-2xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight cursor-pointer" onclick="bukaModalDetail(${lukisan.id}, 'featured')">${lukisan.judul}</h3>
+                                <p class="text-slate-400 text-xs sm:text-sm leading-relaxed font-light line-clamp-3">${lukisan.deskripsi || 'Tidak ada deskripsi filosofi untuk karya ini.'}</p>
+                                
+                                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/5">
+                                    <div>
+                                        <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-semibold mb-0.5">Dimensi Fisik</span>
+                                        <span class="font-mono text-xs sm:text-sm font-bold text-slate-300">${lukisan.ukuran}</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="block text-[8px] uppercase tracking-widest font-semibold mb-0.5" style="color: ${warnaAksenGlobal}cc">Nilai Investasi</span>
+                                        <span class="font-mono text-base sm:text-xl font-black text-white">${formatRupiah(lukisan.harga)}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-2 w-full pt-2">
+                                    <button onclick="bukaModalDetail(${lukisan.id}, 'featured')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer bg-transparent text-slate-300 border-white/10 hover:bg-white/5 active:scale-[0.98]">
+                                        Tampilkan Detail
+                                    </button>
+                                    <button onclick="jalankanKlikWhatsApp('${nomorWhatsAppGlobal}', '${pesanWhatsApp}')" class="w-1/2 text-center border text-[11px] font-bold py-3.5 rounded-xl transition-all duration-300 uppercase tracking-wider cursor-pointer shadow-md hover:shadow-xl active:scale-[0.98]" style="background-color: ${warnaAksenGlobal}; color: ${(warnaBgGlobal==='#ffffff'||warnaAksenGlobal==='#ffffff')?'#0f172a':'#000000'}; border-color: ${warnaAksenGlobal}">
+                                        Hubungi Kolektor
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // 1. Render ke Section Featured (Gaya Overlapping Stack)
                 if (lukisan.is_featured === true) {
-                    wadahFeatured.insertAdjacentHTML('beforeend', buildHtmlCard("featured"));
+                    adaKoleksiFeatured = true;
+                    wadahFeatured.insertAdjacentHTML('beforeend', buildHtmlCardStacked());
                 }
                 
-                // 2. Kondisi Render ke Section Jasa Lukis Wajah
+                // 2. Render ke Section Jasa Lukis Wajah (Gaya Standar Grid)
                 if (lukisan.is_lukis_wajah === true) {
                     adaLukisWajah = true;
-                    wadahLukisWajah.insertAdjacentHTML('beforeend', buildHtmlCard("lukis-wajah"));
+                    wadahLukisWajah.insertAdjacentHTML('beforeend', buildHtmlCardGrid("lukis-wajah"));
                 }
 
-                // 3. Kondisi Render ke Tab Katalog (Arsip) - [DIPERBAIKI AGAR OTOMATIS MUNCUL TANPA IS_ARCHIVE MANDATORY]
+                // 3. Render ke Tab Katalog Arsip (Gaya Standar Grid)
                 if (cocokKategori && cocokSearch) {
                     adaKatalogCocok = true;
-                    wadahArchive.insertAdjacentHTML('beforeend', buildHtmlCard("katalog"));
+                    wadahArchive.insertAdjacentHTML('beforeend', buildHtmlCardGrid("katalog"));
                 }
             });
 
-            // Handle jika hasil filter di tab katalog kosong (misal tidak ada kategori terkait)
+            // Jalankan inisialisasi animasi GSAP ScrollTrigger setelah elemen selesai dibuat di DOM
+            if (adaKoleksiFeatured) {
+                aktifkanSistemAnimasiScrollImersif();
+            } else {
+                wadahFeatured.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-10">Belum ada karya seni unggulan yang di-publish.</p>`;
+            }
+
             if(!adaKatalogCocok){
                 wadahArchive.innerHTML = `<p class="text-xs text-slate-500 italic text-center col-span-full py-10">Tidak ada karya seni yang cocok dengan kategori "${kategoriAktif}" atau kata kunci pencarian.</p>`;
             }
 
-            // Sembunyikan section/tombol menu jika database lukis wajah kosong
             const seksiLukisWajah = document.getElementById("seksi-lukis-wajah");
             const btnMenuLukisWajah = document.getElementById("btn-menu-lukis-wajah");
             if (!adaLukisWajah) {
