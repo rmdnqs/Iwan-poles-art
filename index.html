@@ -94,7 +94,7 @@
             <nav id="nav-container" class="flex flex-wrap gap-1 bg-slate-900/40 p-1 border border-white/5 backdrop-blur-md rounded-2xl text-xs w-full md:w-auto justify-center theme-transisi">
                 <button onclick="navigasiMenu('home', 'seksi-top')" id="btn-menu-home" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Unggulan</button>
                 <button onclick="navigasiMenu('home', 'seksi-lukis-wajah')" id="btn-menu-lukis-wajah" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Jasa Lukis Wajah</button>
-                <button onclick="navigasiMenu('katalog', '')" id="btn-menu-katalog" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Katalog Kategori</button>
+                <button onclick="navigasiMenu('katalog', '')" id="btn-menu-katalog" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Kategori Lukisan</button>
                 <button onclick="navigasiMenu('home', 'seksi-profil')" id="btn-menu-profil" class="menu-btn px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Profil Pelukis</button>
             </nav>
         </div>
@@ -192,10 +192,8 @@
     <div id="tab-katalog" class="tab-content max-w-7xl mx-auto px-4 sm:px-8 py-16 space-y-12 relative z-30">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/5 pb-8">
             <div id="filter-container" class="flex flex-wrap gap-1.5 bg-slate-900/40 p-1.5 border border-white/5 rounded-2xl text-xs theme-transisi backdrop-blur-md">
+                <!-- Data Kategori Di-render Dinamis oleh Script dari Supabase Cloud -->
                 <button id="btn-filter-Semua" onclick="gantiKategoriFilter('Semua')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Semua Karya</button>
-                <button id="btn-filter-Abstrak" onclick="gantiKategoriFilter('Abstrak')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Abstrak</button>
-                <button id="btn-filter-Realisme" onclick="gantiKategoriFilter('Realisme')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Realisme</button>
-                <button id="btn-filter-Lanskap" onclick="gantiKategoriFilter('Lanskap')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Lanskap</button>
             </div>
             
             <div class="relative w-full md:w-80">
@@ -538,10 +536,51 @@
             gsap.registerPlugin(ScrollTrigger);
         }
 
+        // ==========================================
+        // 🏷️ FUNGSI LOAD STRUKTUR TAB KATEGORI SECARA DINAMIS
+        // ==========================================
+        async function sinkronisasiTabKategoriDinamis() {
+            try {
+                const containerFilter = document.getElementById("filter-container");
+                // Reset tab filter, biarkan tombol 'Semua Karya' tetap ada sebagai default awal
+                containerFilter.innerHTML = `<button id="btn-filter-Semua" onclick="gantiKategoriFilter('Semua')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Semua Karya</button>`;
+                
+                // Fetch list kategori langsung dari database cloud
+                let { data: listKategori, error } = await dbCloud.from('kategori').select('*');
+                if (error) throw error;
+
+                if (listKategori && listKategori.length > 0) {
+                    listKategori.forEach(kat => {
+                        // Fail-safe toleransi skema nama kolom database
+                        const namaBersihKat = (kat.nama_kategori || kat.nama || "").trim();
+                        if (namaBersihKat) {
+                            const htmlTabBaru = `
+                                <button id="btn-filter-${namaBersihKat.replace(/\s+/g, '_')}" onclick="gantiKategoriFilter('${namaBersihKat}')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">${namaBersihKat}</button>
+                            `;
+                            containerFilter.insertAdjacentHTML('beforeend', htmlTabBaru);
+                        }
+                    });
+                }
+            } catch(err) {
+                console.warn("Gagal sinkronisasi menu tab kategori dinamis, menggunakan backup default:", err.message);
+                // Fail-safe lokal jika koneksi tabel kategori terkendala
+                const containerFilter = document.getElementById("filter-container");
+                containerFilter.innerHTML = `
+                    <button id="btn-filter-Semua" onclick="gantiKategoriFilter('Semua')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Semua Karya</button>
+                    <button id="btn-filter-Abstrak" onclick="gantiKategoriFilter('Abstrak')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Abstrak</button>
+                    <button id="btn-filter-Realisme" onclick="gantiKategoriFilter('Realisme')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Realisme</button>
+                    <button id="btn-filter-Lanskap" onclick="gantiKategoriFilter('Lanskap')" class="filter-btn px-5 py-2.5 rounded-xl transition-all duration-300 cursor-pointer font-medium tracking-wide">Lanskap</button>
+                `;
+            }
+        }
+
         async function initAplikasiKlien() {
             try {
                 initSmoothScrollingEngine();
                 await catatPengunjungBaru();
+
+                // 1. Ambil & bangun menu tab kategori secara dinamis dari database cloud
+                await sinkronisasiTabKategoriDinamis();
 
                 let { data: config, error: configError } = await dbCloud.from('konfigurasi_web').select('*').eq('id', 1).single();
                 if (configError) throw configError;
@@ -681,7 +720,9 @@
                 btn.style.color = "rgba(255, 255, 255, 0.4)";
                 btn.style.boxShadow = "none";
                 
-                if(btn.innerText.includes(kat === 'Semua' ? 'Semua Karya' : kat)) {
+                // Normalisasi pengecekan teks button secara aman
+                const targetText = kat === 'Semua' ? 'Semua Karya' : kat;
+                if(btn.innerText.trim() === targetText.trim()) {
                     btn.style.backgroundColor = warnaAksenGlobal;
                     btn.style.color = (warnaBgGlobal === "#ffffff" || warnaAksenGlobal === "#ffffff") ? "#0f172a" : "#000000";
                     btn.style.boxShadow = `0 4px 14px ${warnaAksenGlobal}33`;
