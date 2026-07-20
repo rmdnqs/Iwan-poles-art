@@ -154,7 +154,7 @@
 
                 <!-- KONTAINER MARKETPLACE PROFIL -->
                 <div id="profil-marketplace" class="flex flex-wrap justify-center gap-3 mt-4">
-                    <!-- Link dan Logo di-render dari script -->
+                    <!-- Link dan Logo di-render dari script secara dinamis melalui data landing_marketplace -->
                 </div>
 
                 <div class="pt-6 max-w-lg mx-auto grid grid-cols-3 gap-6 text-center text-xs px-4">
@@ -539,6 +539,7 @@
                 infinite: false,
             });
 
+            // Sinkronisasi frame render dengan requestAnimationFrame
             function updateScrollFrame(time) {
                 lenisSmoothScroll.raf(time);
                 requestAnimationFrame(updateScrollFrame);
@@ -584,9 +585,9 @@
         }
 
         // ==========================================
-        // 🏷️ FUNGSI RENDER LOGO MARKETPLACE
+        // 🏷️ FITUR UTAMA BARU: RENDER DARI TABLE landing_marketplace
         // ==========================================
-        function renderMarketplaceDanSosmed(config) {
+        async function renderMarketplaceDariTable() {
             const wadahProfil = document.getElementById("profil-marketplace");
             const wadahFooter = document.getElementById("footer-marketplace");
             if(!wadahProfil || !wadahFooter) return;
@@ -594,34 +595,32 @@
             wadahProfil.innerHTML = "";
             wadahFooter.innerHTML = "";
 
-            // Kamus data logo umum yang sering dipakai
-            const platformTersedia = [
-                { key: 'link_shopee', name: 'Shopee', icon: 'https://img.icons8.com/ios-filled/50/ffffff/shopee.png' },
-                { key: 'link_tokopedia', name: 'Tokopedia', icon: 'https://img.icons8.com/ios-filled/50/ffffff/online-store.png' }, // Menggunakan icon generic store jika tidak ada
-                { key: 'link_instagram', name: 'Instagram', icon: 'https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png' },
-                { key: 'link_tiktok', name: 'TikTok', icon: 'https://img.icons8.com/ios-filled/50/ffffff/tiktok.png' },
-                { key: 'link_facebook', name: 'Facebook', icon: 'https://img.icons8.com/ios-filled/50/ffffff/facebook-new.png' }
-            ];
+            try {
+                // Mengambil data secara dinamis dari table landing_marketplace di Supabase
+                let { data: marketplaces, error } = await dbCloud.from('landing_marketplace').select('*');
+                if (error) throw error;
 
-            let adaData = false;
+                if (marketplaces && marketplaces.length > 0) {
+                    marketplaces.forEach(m => {
+                        // Toleransi jika nama kolom menggunakan format link / url / logo / logo_url
+                        const linkTujuan = m.link || m.url || '#';
+                        const urlLogo = m.logo_url || m.logo || 'https://placehold.co/50';
+                        const namaPlatform = m.nama || 'Marketplace';
 
-            platformTersedia.forEach(platform => {
-                if (config[platform.key]) {
-                    adaData = true;
-                    // HTML untuk Icon
-                    const htmlElement = `
-                        <a href="${config[platform.key]}" target="_blank" rel="noopener noreferrer" title="Kunjungi ${platform.name}" class="w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 shadow-md group p-2.5 cursor-pointer card-dinamis hover:scale-110" style="background-color: ${warnaCardGlobal}; border-color: rgba(255,255,255,0.1);">
-                            <img src="${platform.icon}" alt="Logo ${platform.name}" class="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300" style="filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));" />
-                        </a>
-                    `;
-                    wadahProfil.insertAdjacentHTML('beforeend', htmlElement);
-                    wadahFooter.insertAdjacentHTML('beforeend', htmlElement);
+                        const htmlElement = `
+                            <a href="${linkTujuan}" target="_blank" rel="noopener noreferrer" title="Kunjungi ${namaPlatform}" class="w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 shadow-md group p-2.5 cursor-pointer card-dinamis hover:scale-110" style="background-color: ${warnaCardGlobal}; border-color: rgba(255,255,255,0.1);">
+                                <img src="${urlLogo}" alt="Logo ${namaPlatform}" class="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300" style="filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));" />
+                            </a>
+                        `;
+                        wadahProfil.insertAdjacentHTML('beforeend', htmlElement);
+                        wadahFooter.insertAdjacentHTML('beforeend', htmlElement);
+                    });
+                } else {
+                    wadahProfil.style.display = "none";
+                    wadahFooter.style.display = "none";
                 }
-            });
-
-            if(!adaData) {
-                wadahProfil.style.display = "none";
-                wadahFooter.style.display = "none";
+            } catch (err) {
+                console.error("Gagal memuat table landing_marketplace:", err.message);
             }
         }
 
@@ -668,10 +667,10 @@
                         config.warna_aksen || "#f59e0b",
                         config.warna_teks_utama || "#f8fafc"
                     );
-
-                    // Panggil fungsi render marketplace setelah tema di-apply
-                    renderMarketplaceDanSosmed(config);
                 }
+
+                // Panggil fungsi render dinamis marketplace dari table landing_marketplace
+                await renderMarketplaceDariTable();
 
                 let { data: lukisanList, error: lukisanError } = await dbCloud.from('lukisan').select('*').order('created_at', { ascending: false });
                 if (lukisanError) throw lukisanError;
@@ -838,6 +837,9 @@
             }, 300);
         }
 
+        // ==========================================
+        // 🔒 KODE UTUH FUNGSI FILTER UTAMA DAN TEMPLATE GENERATOR
+        // ==========================================
         function filterSemuaKonten() {
             const kataKunci = document.getElementById("search-katalog").value.toLowerCase();
             const wadahFeatured = document.getElementById("grid-featured");
@@ -861,7 +863,7 @@
                 const urlGambarAset = lukisan.media || 'https://placehold.co/600x400?text=No+Image';
                 const judulBersih = lukisan.judul.replace(/['"]/g, '');
                 
-                // SISTEM BARU: Cek dari string nama kategori hasil inputan CMS
+                // SISTEM KATEGORISASI: Cek string nama kategori hasil inputan CMS
                 const namaKategori = (lukisan.kategori || '').toLowerCase().trim();
                 const isKategoriWajah = (namaKategori === 'lukis wajah') || (lukisan.is_lukis_wajah === true);
 
@@ -964,7 +966,7 @@
                     </div>
                 `;
 
-                // Logika Filter
+                // Evaluasi penempatan data berdasarkan kategori dan parameter filter
                 if (lukisan.is_featured === true) {
                     adaKoleksiFeatured = true;
                     wadahFeatured.insertAdjacentHTML('beforeend', buildHtmlCardStacked());
@@ -984,6 +986,7 @@
                 }
             });
 
+            // Re-binding event click untuk integrasi API WhatsApp terenkripsi
             featuredBindings.forEach(bind => {
                 const button = document.getElementById(bind.id);
                 if (button) {
@@ -1004,6 +1007,7 @@
                 }
             });
 
+            // Mengaktifkan ScrollTrigger jika ada elemen bertumpuk
             if (adaKoleksiFeatured) {
                 aktifkanSistemAnimasiScrollImersif();
             } else {
